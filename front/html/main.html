@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduFlow - PSB Academy</title>
+    <link rel="icon" href="/img/PSB_Academy_icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/front/css/general.css">
+    <link rel="stylesheet" href="/front/css/main.css">
+</head>
+<body>
+    <!-- Header -->
+<header class="header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1>EduFlow</h1>
+                    <span class="logo-subtitle">PSB Academy</span>
+                </div>
+            </div>
+            <div class="user-menu">
+                <div class="notification">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-profile" id="userProfile">
+                    <img src="https://parade.com/.image/w_3840,q_auto:good,c_fill,ar_1:1/MTkwNTgwODMzNDk5MDMwNjUz/971e034dc234d402f227bfd68bd320eb-s-600-d-mm-r-g.jpg" alt="User" class="user-avatar">
+                    <span class="user-name">Иван Петров</span>
+                    <div class="dropdown-arrow">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    
+                    <!-- Выпадающее меню -->
+                    <div class="dropdown-menu">
+                        <div class="dropdown-header">
+                            <div class="user-info">
+                                <img src="https://parade.com/.image/w_3840,q_auto:good,c_fill,ar_1:1/MTkwNTgwODMzNDk5MDMwNjUz/971e034dc234d402f227bfd68bd320eb-s-600-d-mm-r-g.jpg" alt="User" class="dropdown-avatar">
+                                <div class="user-details">
+                                    <div class="user-fullname">Иван Петров</div>
+                                    <div class="user-email">ivan.petrov@psb.ru</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="profile.html" class="dropdown-item">
+                            <i class="fas fa-user"></i>
+                            <span>Личный кабинет</span>
+                        </a>
+                        <a href="my-courses.html" class="dropdown-item">
+                            <i class="fas fa-book"></i>
+                            <span>Мои курсы</span>
+                            <span class="dropdown-badge">9</span>
+                        </a>
+                        <a href="achievements.html" class="dropdown-item">
+                            <i class="fas fa-trophy"></i>
+                            <span>Достижения</span>
+                            <span class="dropdown-badge">5</span>
+                        </a>
+                        <a href="settings.html" class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            <span>Настройки</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="help.html" class="dropdown-item">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Помощь</span>
+                        </a>
+                        <a href="#" class="dropdown-item logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Выйти</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <!-- AI Assistant -->
+    <div class="ai-assistant">
+        <div class="ai-toggle">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div class="ai-chat">
+            <div class="ai-header">
+                <span>AI Помощник</span>
+                <i class="fas fa-times ai-close"></i>
+            </div>
+            <div class="ai-messages">
+                <div class="ai-message bot">
+                    Привет! Я ваш AI помощник. Чем могу помочь?
+                </div>
+            </div>
+            <div class="ai-input">
+                <input type="text" placeholder="Задайте вопрос...">
+                <button><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Quick Stats Section -->
+            <section class="quick-stats-section">
+                <div class="stats-grid">
+                    <!-- Мои Курсы -->
+                    <div class="stat-card fade-in-up" style="animation-delay: 0.1s">
+                        <div class="stat-header">
+                            <div class="stat-icon">
+                                <span class="icon-text">🎓</span>  <!-- академическая шапочка -->
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-number">12</div>
+                                <div class="stat-label">Мои Курсы</div>
+                            </div>
+                        </div>
+                        <div class="stat-content">
+                            <div class="courses-list">
+                                <div class="course-item">
+                                    <i class="fas fa-lock-open"></i>
+                                    <span>Private Banking</span>
+                                    <span class="course-progress">80%</span>
+                                </div>
+                                <div class="course-item">
+                                    <i class="fas fa-lock-open"></i>
+                                    <span>AML Compliance</span>
+                                    <span class="course-progress">60%</span>
+                                </div>
+                                <div class="course-item">
+                                    <i class="fas fa-lock"></i>
+                                    <span>Цифровая безопасность</span>
+                                    <span class="course-progress">0%</span>
+                                </div>
+                                <div class="course-item">
+                                    <i class="fas fa-lock"></i>
+                                    <span>Стандарты обслуживания</span>
+                                    <span class="course-progress">45%</span>
+                                </div>
+                            </div>
+                            <div class="overall-progress">
+                                <div class="progress-ring">
+                                    <svg class="progress-circle" width="80" height="80">
+                                        <circle class="progress-circle-bg" cx="40" cy="40" r="35"></circle>
+                                        <circle class="progress-circle-fill" cx="40" cy="40" r="35" 
+                                                stroke-dasharray="219.8" stroke-dashoffset="65.94"
+                                                style="stroke-dashoffset: 65.94;"></circle>
+                                    </svg>
+                                    <div class="progress-percentage">
+                                        70%
+                                    </div>
+                                </div>
+                                <div class="progress-label">Общий прогресс</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Задания -->
+                    <div class="stat-card fade-in-up" style="animation-delay: 0.2s">
+                        <div class="stat-header">
+                            <div class="stat-icon">
+                                <span class="icon-text">📌</span>  <!-- кнопка -->
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-number">8</div>
+                                <div class="stat-label">Задания</div>
+                            </div>
+                        </div>
+                        <div class="stat-content">
+                            <div class="assignments-list">
+                                <div class="assignment-item urgent">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <div class="assignment-details">
+                                        <span class="assignment-title">Финальный экзамен</span>
+                                        <span class="assignment-deadline">до 15.12</span>
+                                    </div>
+                                </div>
+                                <div class="assignment-item new">
+                                    <i class="fas fa-star"></i>
+                                    <div class="assignment-details">
+                                        <span class="assignment-title">Кейс: Подбор решения</span>
+                                        <span class="assignment-deadline">до 10.12</span>
+                                    </div>
+                                </div>
+                                <div class="assignment-item completed">
+                                    <i class="fas fa-check-circle"></i>
+                                    <div class="assignment-details">
+                                        <span class="assignment-title">Тест: Продукты</span>
+                                        <span class="assignment-status">завершено</span>
+                                    </div>
+                                </div>
+                                <div class="assignment-item">
+                                    <i class="fas fa-file-alt"></i>
+                                    <div class="assignment-details">
+                                        <span class="assignment-title">Эссе по KYC</span>
+                                        <span class="assignment-deadline">до 20.12</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stat-badges">
+                                <div class="badge urgent">3 срочных</div>
+                                <div class="badge new">2 новых</div>
+                                <div class="badge completed">5 завершено</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Прогресс -->
+                    <div class="stat-card fade-in-up" style="animation-delay: 0.3s">
+                        <div class="stat-header">
+                            <div class="stat-icon">
+                                <span class="icon-text">📈</span>  <!-- растущий график -->
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-number">85%</div>
+                                <div class="stat-label">Прогресс</div>
+                            </div>
+                        </div>
+                        <div class="stat-content">
+                            <div class="progress-stats">
+                                <div class="progress-item">
+                                    <span>Эфф-ность</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 92%"></div>
+                                    </div>
+                                    <span class="progress-percent">92%</span>
+                                </div>
+                                <div class="progress-item">
+                                    <span>Скорость</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 78%"></div>
+                                    </div>
+                                    <span class="progress-percent">78%</span>
+                                </div>
+                                <div class="progress-item">
+                                    <span>Качество</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 85%"></div>
+                                    </div>
+                                    <span class="progress-percent">85%</span>
+                                </div>
+                                <div class="progress-item">
+                                    <span>Участие</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 65%"></div>
+                                    </div>
+                                    <span class="progress-percent">65%</span>
+                                </div>
+                            </div>
+                            <div class="rank-section">
+                                <div class="rank-info">
+                                    <div class="rank">
+                                        <i class="fas fa-trophy"></i>
+                                        3 место
+                                    </div>
+                                    <div class="department">в отделе</div>
+                                </div>
+                                <div class="points">
+                                    <div class="points-number">1,250</div>
+                                    <div class="points-label">баллов</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+          <!-- Live Feed Section -->
+    <section class="feed-section">
+        <div class="section-header fade-in-up" style="animation-delay: 0.4s">
+            <h2>Живая лента активностей</h2>
+            <div class="filter-buttons">
+                <button class="btn-filter active" data-filter="all">Все</button>
+                <button class="btn-filter" data-filter="course">Курсы</button>
+                <button class="btn-filter" data-filter="assignment">Задания</button>
+                <button class="btn-filter" data-filter="discussion">Обсуждения</button>
+            </div>
+        </div>
+    
+        <div class="feed-container">
+            <!-- Activity Item 1 -->
+            <div class="activity-item fade-in-up" style="animation-delay: 0.5s" data-type="course">
+                <div class="activity-main">
+                    <div class="activity-icon" style="background: var(--psb-blue)">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-title">Новый материал</span>
+                            <span class="activity-time">Сегодня, 10:30</span>
+                        </div>
+                        <p class="activity-text">
+                            <strong>Мария Сидорова</strong> добавила новый материал в курс 
+                            <strong>"Продукты Private Banking"</strong>
+                        </p>
+                        <div class="activity-meta">
+                            <span class="course-tag">#private-banking</span>
+                            <span class="file-type"><i class="fas fa-file-pdf"></i> Презентация</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-actions">
+                    <button class="btn-outline"><i class="fas fa-eye"></i> Открыть</button>
+                    <button class="btn-outline"><i class="fas fa-comment"></i> Комментировать</button>
+                </div>
+            </div>
+
+            <!-- Activity Item 2 -->
+            <div class="activity-item fade-in-up" style="animation-delay: 0.6s" data-type="assignment">
+                <div class="activity-main">
+                    <div class="activity-icon" style="background: var(--psb-orange)">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-title">Задание завершено</span>
+                            <span class="activity-time">Сегодня, 09:15</span>
+                        </div>
+                        <p class="activity-text">
+                            Вы завершили модуль <strong>"Инвестиционные решения"</strong>
+                        </p>
+                        <div class="activity-score">
+                            <span class="score"><i class="fas fa-star"></i> 92%</span>
+                            <span class="time"><i class="fas fa-clock"></i> 45 мин</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-badge success">
+                    <i class="fas fa-check"></i> Успешно пройдено
+                </div>
+            </div>
+
+            <!-- Activity Item 3 -->
+            <div class="activity-item fade-in-up" style="animation-delay: 0.7s" data-type="assignment">
+                <div class="activity-main">
+                    <div class="activity-icon" style="background: #10b981">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-title">Новое задание</span>
+                            <span class="activity-time">2 дня назад</span>
+                        </div>
+                        <p class="activity-text">
+                            Доступно новое задание: <strong>"Финальный экзамен"</strong>
+                        </p>
+                        <div class="deadline-info">
+                            <span class="deadline"><i class="fas fa-calendar"></i> Дедлайн: 15.12.2025</span>
+                            <span class="points"><i class="fas fa-gem"></i> 50 баллов</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-actions">
+                    <button class="btn-primary"><i class="fas fa-play"></i> Начать выполнение</button>
+                </div>
+            </div>
+
+            <!-- Activity Item 4 -->
+            <div class="activity-item fade-in-up" style="animation-delay: 0.8s" data-type="discussion">
+                <div class="activity-main">
+                    <div class="activity-icon" style="background: #8b5cf6">
+                        <i class="fas fa-comment"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-title">Новый комментарий</span>
+                            <span class="activity-time">Вчера, 16:20</span>
+                        </div>
+                        <p class="activity-text">
+                            <strong>Анна Козлова</strong> оставила комментарий в обсуждении курса
+                        </p>
+                        <div class="comment-preview">
+                            "Кто уже прошел тест по модулю 3? Есть вопросы по заданию..."
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-actions">
+                    <button class="btn-outline"><i class="fas fa-reply"></i> Ответить</button>
+                </div>
+            </div>
+
+            <!-- Activity Item 5 -->
+            <div class="activity-item fade-in-up" style="animation-delay: 0.9s" data-type="course">
+                <div class="activity-main">
+                    <div class="activity-icon" style="background: #f59e0b">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-title">Запись вебинара</span>
+                            <span class="activity-time">Вчера, 14:00</span>
+                        </div>
+                        <p class="activity-text">
+                            Доступна запись вебинара <strong>"Новые продукты Private Banking"</strong>
+                        </p>
+                        <div class="activity-meta">
+                            <span class="course-tag">#private-banking</span>
+                            <span class="file-type"><i class="fas fa-play-circle"></i> Видео, 45 мин</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-actions">
+                    <button class="btn-outline"><i class="fas fa-play"></i> Смотреть</button>
+                </div>
+            </div>
+
+            <!-- Activity Item 6 -->
+            <div class="activity-item fade-in-up" style="animation-delay: 1.0s" data-type="assignment">
+                <div class="activity-main">
+                    <div class="activity-icon" style="background: #ef4444">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-header">
+                            <span class="activity-title">Срочное уведомление</span>
+                            <span class="activity-time">3 дня назад</span>
+                        </div>
+                        <p class="activity-text">
+                            <strong>Обязательный курс:</strong> "Обновление регламента KYC" должен быть завершен до 20.12.2025
+                        </p>
+                        <div class="deadline-info urgent">
+                            <span class="deadline"><i class="fas fa-clock"></i> Осталось 7 дней</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-actions">
+                    <button class="btn-primary"><i class="fas fa-play"></i> Начать сейчас</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+            <!-- AI Recommendations -->
+            <section class="ai-recommendations">
+                <div class="section-header fade-in-up" style="animation-delay: 1.1s">
+                    <h2><i class="fas fa-robot"></i> AI Рекомендации</h2>
+                    <span class="ai-badge">Powered by AI</span>
+                </div>
+                
+                <div class="recommendations-grid">
+                    <div class="recommendation-card fade-in-up" style="animation-delay: 1.2s">
+                        <div class="rec-header">
+                            <div class="rec-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h3>Ускоренное обучение</h3>
+                        </div>
+                        <p>На основе вашего прогресса AI подобрал оптимальный путь изучения продуктов Private Banking</p>
+                        <div class="rec-metrics">
+                            <div class="metric">
+                                <span>Сэкономлено времени</span>
+                                <strong>2.5 часа</strong>
+                            </div>
+                            <div class="metric">
+                                <span>Рост эффективности</span>
+                                <strong>+23%</strong>
+                            </div>
+                        </div>
+                        <button class="btn-primary">
+                            <i class="fas fa-play"></i> Начать ускоренный курс
+                        </button>
+                    </div>
+
+                    <div class="recommendation-card fade-in-up" style="animation-delay: 1.3s">
+                        <div class="rec-header">
+                            <div class="rec-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h3>Персональный план</h3>
+                        </div>
+                        <p>AI проанализировал ваши слабые места и создал индивидуальный план развития</p>
+                        <div class="skills-list">
+                            <div class="skill-item">
+                                <span>Техники продаж</span>
+                                <div class="skill-level">
+                                    <div class="level-fill" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span>Знание продуктов</span>
+                                <div class="skill-level">
+                                    <div class="level-fill" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <span>Compliance</span>
+                                <div class="skill-level">
+                                    <div class="level-fill" style="width: 45%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-outline">
+                            <i class="fas fa-chart-line"></i> Смотреть детали
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+        <script src="/front/js/main.js"></script>
+
+</body>
+</html>

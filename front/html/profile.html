@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет - PSB Learning</title>
+    <link rel="icon" href="/img/PSB_Academy_icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="/front/css/profile.css">
+
+</head>
+<body>
+    <!-- Header -->
+    <header class="profile-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/front/html/main.html" class="logo-link">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div>
+                            <h1>EduFlow</h1>
+                            <span class="logo-subtitle">PSB Academy</span>
+                        </div>
+                    </div>
+                </a>
+                <nav class="profile-nav">
+                    <a href="main.html" class="nav-link">
+                        Главная
+                    </a>
+                    <a href="courses.html" class="nav-link">
+                        Курсы
+                    </a>
+                    <a href="profile.html" class="nav-link active">
+                        Профиль
+                    </a>
+                    <a href="settings.html" class="nav-link">
+                        Настройки
+                    </a>
+                </nav>
+                <div class="user-menu">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="profile-main">
+        <div class="container">
+            <!-- Profile Header -->
+            <section class="profile-hero">
+                <div class="hero-background">
+                    <div class="hero-content">
+                        <div class="avatar-section">
+                            <div class="avatar-container">
+                                <img src="https://parade.com/.image/w_3840,q_auto:good,c_fill,ar_1:1/MTkwNTgwODMzNDk5MDMwNjUz/971e034dc234d402f227bfd68bd320eb-s-600-d-mm-r-g.jpg" alt="User Avatar" class="profile-avatar">
+                                <div class="avatar-status online"></div>
+                                <button class="edit-avatar-btn">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                            <div class="avatar-info">
+                                <h1 class="user-fullname">Иван Иванов</h1>
+                                <p class="user-title">Senior Developer</p>
+                                <div class="user-badges">
+                                    <span class="badge premium">
+                                        <i class="fas fa-crown"></i>
+                                        Premium
+                                    </span>
+                                    <span class="badge verified">
+                                        <i class="fas fa-check"></i>
+                                        Verified
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">42</div>
+                                <div class="stat-label">Курсы</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">156</div>
+                                <div class="stat-label">Часов</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">24</div>
+                                <div class="stat-label">Достижения</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">5</div>
+                                <div class="stat-label">Рейтинг</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Content -->
+            <div class="profile-content">
+                <!-- Left Column -->
+                <div class="profile-left">
+                    <!-- Personal Info Card -->
+                    <section class="info-card">
+                        <div class="card-header">
+                            <h3>Личная информация</h3>
+                            <button class="edit-btn">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label>Имя</label>
+                                    <span class="info-value">Иван</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Фамилия</label>
+                                    <span class="info-value">Иванов</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Email</label>
+                                    <span class="info-value">ivan.ivanov@psb.ru</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Телефон</label>
+                                    <span class="info-value">+7 (999) 123-45-67</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Дата рождения</label>
+                                    <span class="info-value">15 марта 1990</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Отдел</label>
+                                    <span class="info-value">IT отдел</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Должность</label>
+                                    <span class="info-value">Senior Developer</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Стаж</label>
+                                    <span class="info-value">5 лет</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Skills Card -->
+                    <section class="info-card">
+                        <div class="card-header">
+                            <h3>Навыки и компетенции</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="skills-grid">
+                                <div class="skill-item">
+                                    <div class="skill-info">
+                                        <span class="skill-name">JavaScript</span>
+                                        <span class="skill-level">Продвинутый</span>
+                                    </div>
+                                    <div class="skill-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 85%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="skill-item">
+                                    <div class="skill-info">
+                                        <span class="skill-name">React</span>
+                                        <span class="skill-level">Продвинутый</span>
+                                    </div>
+                                    <div class="skill-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 80%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="skill-item">
+                                    <div class="skill-info">
+                                        <span class="skill-name">Node.js</span>
+                                        <span class="skill-level">Средний</span>
+                                    </div>
+                                    <div class="skill-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 70%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="skill-item">
+                                    <div class="skill-info">
+                                        <span class="skill-name">Python</span>
+                                        <span class="skill-level">Средний</span>
+                                    </div>
+                                    <div class="skill-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 65%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="skill-item">
+                                    <div class="skill-info">
+                                        <span class="skill-name">UI/UX Design</span>
+                                        <span class="skill-level">Начальный</span>
+                                    </div>
+                                    <div class="skill-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 40%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column -->
+                <div class="profile-right">
+                    <!-- Progress Stats -->
+                    <section class="info-card">
+                        <div class="card-header">
+                            <h3>Прогресс обучения</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="progress-stats">
+                                <div class="progress-item">
+                                    <div class="progress-chart">
+                                        <div class="progress-ring">
+                                            <svg class="progress-circle" viewBox="0 0 80 80">
+                                                <circle class="progress-circle-bg" cx="40" cy="40" r="35"></circle>
+                                                <circle class="progress-circle-fill excellent" cx="40" cy="40" r="35" data-percent="75"></circle>
+                                            </svg>
+                                            <div class="progress-percentage">75%</div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-info">
+                                        <h4>Общий прогресс</h4>
+                                        <p>Завершено 18 из 24 курсов</p>
+                                        <div class="progress-details">
+                                            <div class="detail-item">
+                                                <span class="detail-label">Начато курсов:</span>
+                                                <span class="detail-value">24</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Завершено:</span>
+                                                <span class="detail-value">18</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">В процессе:</span>
+                                                <span class="detail-value">6</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Recent Activity -->
+                    <section class="info-card">
+                        <div class="card-header">
+                            <h3>Последняя активность</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="activity-timeline">
+                                <div class="activity-item">
+                                    <div class="activity-icon completed">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Завершен курс "React Advanced"</h4>
+                                        <p>Оценка: 95/100</p>
+                                        <span class="activity-time">2 часа назад</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon progress">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Начат курс "Node.js Microservices"</h4>
+                                        <p>Прогресс: 45%</p>
+                                        <span class="activity-time">5 часов назад</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon achievement">
+                                        <i class="fas fa-trophy"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Получено достижение "Быстрый ученик"</h4>
+                                        <p>Завершено 5 курсов за месяц</p>
+                                        <span class="activity-time">Вчера</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon test">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Пройден тест "JavaScript Advanced"</h4>
+                                        <p>Результат: 88%</p>
+                                        <span class="activity-time">2 дня назад</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Achievements -->
+                    <section class="info-card">
+                        <div class="card-header">
+                            <h3>Достижения</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="achievements-grid">
+                                <div class="achievement-item">
+                                    <div class="achievement-icon gold">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h4>Первый курс</h4>
+                                        <p>Завершите ваш первый курс</p>
+                                    </div>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="achievement-icon silver">
+                                        <i class="fas fa-bolt"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h4>Быстрый ученик</h4>
+                                        <p>Завершите 5 курсов за месяц</p>
+                                    </div>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="achievement-icon bronze">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h4>Отличник</h4>
+                                        <p>Получите 95+ баллов в 3 курсах</p>
+                                    </div>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="achievement-icon locked">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h4>Эксперт</h4>
+                                        <p>Завершите 20 курсов</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/front/js/profile.js"></script>
+</body>
+</html>
