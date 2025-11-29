@@ -7,14 +7,23 @@ class AssignmentsManager {
         this.currentSort = 'deadline';
         this.uploadedFiles = new Map();
         
-        this.initializeAssignments();
+        this.init();
+    }
+
+    async init() {
+        await this.initializeAssignments();
         this.initializeEventListeners();
         this.applyFilters();
         this.renderAssignments();
     }
 
-    initializeAssignments() {
-        this.assignments = [
+    async initializeAssignments() {
+        // Загружаем задания из API
+        await this.loadAssignmentsFromAPI();
+        
+        // Если не удалось загрузить, используем дефолтные
+        if (this.assignments.length === 0) {
+            this.assignments = [
             {
                 id: 1,
                 title: "Финальный экзамен по математике",
@@ -145,6 +154,83 @@ class AssignmentsManager {
                 studentFiles: []
             }
         ];
+        }
+    }
+
+    async loadAssignmentsFromAPI() {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            console.log('Нет токена авторизации');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/assignments', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Ошибка загрузки заданий');
+            }
+
+            const assignments = await response.json();
+            
+            // Преобразуем данные из БД в формат, ожидаемый фронтендом
+            this.assignments = assignments.map(assignment => ({
+                id: assignment.id,
+                title: assignment.title,
+                subject: assignment.subject || 'Общее',
+                teacher: {
+                    name: 'Преподаватель',
+                    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+                    email: 'teacher@psb.ru'
+                },
+                description: assignment.description || '',
+                deadline: assignment.deadline,
+                status: assignment.user_status === 'submitted' ? 'completed' : (assignment.status || 'active'),
+                maxScore: assignment.max_score || 100,
+                studentScore: assignment.user_score || null,
+                tasks: this.getDefaultTasks(assignment.subject),
+                attachments: [],
+                studentFiles: []
+            }));
+
+            console.log('Задания загружены из БД:', this.assignments.length);
+        } catch (error) {
+            console.error('Ошибка загрузки заданий:', error);
+        }
+    }
+
+    getDefaultTasks(subject) {
+        const tasksBySubject = {
+            'Математика': [
+                'Решить 5 задач по сложным процентам',
+                'Провести статистический анализ данных',
+                'Построить оптимальный инвестиционный портфель'
+            ],
+            'Экономика': [
+                'Проанализировать финансовые отчеты',
+                'Рассчитать показатели ликвидности',
+                'Предложить план реструктуризации'
+            ],
+            'Финансы': [
+                'Ответить на 20 тестовых вопросов',
+                'Решить 5 ситуационных задач'
+            ],
+            'Compliance': [
+                'Исследовать нормативную базу KYC',
+                'Проанализировать кейсы нарушений',
+                'Написать эссе объемом 1500-2000 слов'
+            ],
+            'Программирование': [
+                'Подготовить и очистить данные',
+                'Выбрать и обучить модель',
+                'Оценить качество прогнозирования'
+            ]
+        };
+        return tasksBySubject[subject] || ['Выполнить задание'];
     }
 
     initializeEventListeners() {
@@ -410,7 +496,9 @@ class AssignmentsManager {
     }
 
     renderSubmissionInfo(assignment) {
-        const submissionDate = new Date().toLocaleDateString('ru-RU');
+        const now = new Date();
+        const moscowDate = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Moscow' }));
+        const submissionDate = moscowDate.toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' });
         
         return `
             <div class="submission-info">
@@ -484,7 +572,8 @@ class AssignmentsManager {
 
     formatDate(dateString) {
         const date = new Date(dateString);
-        return date.toLocaleDateString('ru-RU');
+        const moscowDate = new Date(date.toLocaleString('en-US', { timeZone: 'Europe/Moscow' }));
+        return moscowDate.toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' });
     }
 
     viewAssignment(assignmentId) {
@@ -583,13 +672,49 @@ class AssignmentsManager {
         }
     }
 
-    submitAssignment(assignmentId) {
+    async submitAssignment(assignmentId) {
         const assignment = this.assignments.find(a => a.id === assignmentId);
-        if (assignment) {
-            assignment.status = 'completed';
-            assignment.submissionDate = new Date().toISOString();
-            this.applyFilters();
-            this.showNotification(`Задание "${assignment.title}" отправлено на проверку!`, 'success');
+        if (!assignment) return;
+
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            this.showNotification('Необходима авторизация', 'error');
+            return;
+        }
+
+        // Собираем информацию о файлах
+        const files = (assignment.studentFiles || []).map(file => ({
+            name: file.name,
+            type: file.type,
+            size: file.size
+        }));
+
+        try {
+            const response = await fetch(`/api/assignments/${assignmentId}/submit`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ files })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                assignment.status = 'completed';
+                const now = new Date();
+                const moscowDate = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Moscow' }));
+                assignment.submissionDate = moscowDate.toISOString();
+                assignment.user_status = 'submitted';
+                this.applyFilters();
+                this.showNotification(`Задание "${assignment.title}" отправлено на проверку!`, 'success');
+            } else {
+                this.showNotification(data.error || 'Ошибка при отправке задания', 'error');
+            }
+        } catch (error) {
+            console.error('Ошибка отправки задания:', error);
+            this.showNotification('Ошибка соединения с сервером', 'error');
         }
     }
 
@@ -680,7 +805,7 @@ class AssignmentsManager {
 // Инициализация
 let assignmentsManager;
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     assignmentsManager = new AssignmentsManager();
     
     const assignmentsBtn = document.querySelector('.stat-card:nth-child(2)');

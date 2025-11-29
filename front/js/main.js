@@ -58,6 +58,151 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Загружаем профиль при загрузке страницы
     loadUserProfile();
+    
+    // Загружаем активность при загрузке страницы
+    loadActivities();
+
+    // ===== LOAD ACTIVITIES =====
+    async function loadActivities() {
+        const token = localStorage.getItem('authToken');
+        if (!token) return;
+
+        try {
+            const response = await fetch('/api/activities', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Ошибка загрузки активности');
+            }
+
+            const activities = await response.json();
+            allActivities = activities; // Сохраняем все активности для фильтрации
+            renderActivities(activities);
+        } catch (error) {
+            console.error('Ошибка загрузки активности:', error);
+        }
+    }
+
+    function renderActivities(activities) {
+        const container = document.getElementById('feedContainer');
+        if (!container) return;
+
+        if (activities.length === 0) {
+            container.innerHTML = `
+                <div class="no-activities">
+                    <i class="fas fa-inbox"></i>
+                    <p>Пока нет активности</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = activities.map((activity, index) => {
+            const timeAgo = formatTimeAgo(activity.createdAt);
+            const iconConfig = getActivityIcon(activity.type);
+            
+            return `
+                <div class="activity-item fade-in-up" style="animation-delay: ${0.1 * index}s" data-type="${activity.type}">
+                    <div class="activity-main">
+                        <div class="activity-icon" style="background: ${iconConfig.color}">
+                            <i class="${iconConfig.icon}"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-header">
+                                <span class="activity-title">${activity.title}</span>
+                                <span class="activity-time">${timeAgo}</span>
+                            </div>
+                            <p class="activity-text">
+                                ${activity.description || ''}
+                            </p>
+                            ${activity.assignmentTitle ? `
+                                <div class="activity-meta">
+                                    <span class="course-tag">#${activity.assignmentTitle}</span>
+                                </div>
+                            ` : ''}
+                            ${(() => {
+                                try {
+                                    const metadata = typeof activity.metadata === 'string' 
+                                        ? JSON.parse(activity.metadata) 
+                                        : activity.metadata;
+                                    if (metadata && metadata.files && metadata.files.length > 0) {
+                                        return `
+                                            <div class="activity-files">
+                                                ${metadata.files.map(file => {
+                                                    const fileIcon = file.type === 'pdf' ? 'fa-file-pdf' : 
+                                                                   file.type === 'doc' ? 'fa-file-word' : 
+                                                                   'fa-file';
+                                                    return `
+                                                        <div class="activity-file-item">
+                                                            <i class="fas ${fileIcon}"></i>
+                                                            <span class="file-name">${file.name}</span>
+                                                        </div>
+                                                    `;
+                                                }).join('')}
+                                            </div>
+                                        `;
+                                    }
+                                } catch (e) {
+                                    console.error('Ошибка парсинга metadata:', e);
+                                }
+                                return '';
+                            })()}
+                        </div>
+                    </div>
+                    ${activity.type === 'assignment' ? `
+                        <div class="activity-badge success">
+                            <i class="fas fa-check"></i> Отправлено
+                        </div>
+                    ` : `
+                        <div class="activity-actions">
+                            <button class="btn-outline">Открыть</button>
+                        </div>
+                    `}
+                </div>
+            `;
+        }).join('');
+    }
+
+    function getActivityIcon(type) {
+        const icons = {
+            'assignment': { icon: 'fas fa-check-circle', color: 'var(--psb-orange)' },
+            'course': { icon: 'fas fa-file-alt', color: 'var(--psb-blue)' },
+            'discussion': { icon: 'fas fa-comment', color: '#8b5cf6' }
+        };
+        return icons[type] || { icon: 'fas fa-circle', color: '#64748b' };
+    }
+
+    function formatTimeAgo(dateString) {
+        // Парсим дату (может быть в формате SQLite или ISO)
+        let date;
+        if (dateString.includes('T')) {
+            date = new Date(dateString);
+        } else {
+            // Формат SQLite: YYYY-MM-DD HH:MM:SS
+            date = new Date(dateString.replace(' ', 'T') + '+03:00'); // Добавляем московский часовой пояс
+        }
+        
+        // Получаем текущее московское время
+        const now = new Date();
+        const moscowNow = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Moscow' }));
+        const moscowDate = new Date(date.toLocaleString('en-US', { timeZone: 'Europe/Moscow' }));
+        
+        const diffMs = moscowNow - moscowDate;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+
+        if (diffMins < 1) return 'Только что';
+        if (diffMins < 60) return `${diffMins} мин назад`;
+        if (diffHours < 24) return `${diffHours} ч назад`;
+        if (diffDays === 1) return 'Вчера';
+        if (diffDays < 7) return `${diffDays} дня назад`;
+        
+        return moscowDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', timeZone: 'Europe/Moscow' });
+    }
 
     // ===== USER DROPDOWN MENU =====
     function initUserDropdown() {
@@ -350,10 +495,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ===== FILTER FUNCTIONALITY =====
-    const filterButtons = document.querySelectorAll('.btn-filter');
-    const activityItems = document.querySelectorAll('.activity-item');
+    let allActivities = [];
     
     function initFilterFunctionality() {
+        const filterButtons = document.querySelectorAll('.btn-filter');
+        
         filterButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const filter = this.getAttribute('data-filter');
@@ -369,53 +515,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function filterActivityItems(filter) {
-        console.log('Filtering by:', filter);
+        const container = document.getElementById('feedContainer');
+        if (!container) return;
+
+        const filtered = filter === 'all' 
+            ? allActivities 
+            : allActivities.filter(activity => activity.type === filter);
         
-        // Устанавливаем transition для всех элементов
-        activityItems.forEach(item => {
-            item.style.transition = 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            item.style.willChange = 'transform, opacity';
-        });
-        
-        activityItems.forEach((item, index) => {
-            const itemType = item.getAttribute('data-type');
-            const matches = filter === 'all' || itemType === filter;
-            
-            // Убираем CSS анимации
-            item.classList.remove('fade-in-up');
-            item.style.animation = 'none';
-            
-            if (matches) {
-                // Показываем элемент с задержкой
-                setTimeout(() => {
-                    item.classList.remove('hidden');
-                    item.style.display = 'block';
-                    
-                    setTimeout(() => {
-                        item.style.opacity = '1';
-                        item.style.transform = 'translateY(0) scale(1)';
-                    }, 20);
-                    
-                }, index * 80);
-                
-            } else {
-                // Плавное скрытие
-                item.style.opacity = '0';
-                item.style.transform = 'translateY(-15px) scale(0.95)';
-                
-                setTimeout(() => {
-                    item.classList.add('hidden');
-                    item.style.display = 'none';
-                }, 500);
-            }
-        });
-        
-        // Чистим will-change после анимации
-        setTimeout(() => {
-            activityItems.forEach(item => {
-                item.style.willChange = 'auto';
-            });
-        }, 800);
+        renderActivities(filtered);
     }
 
     // ===== PROGRESS ANIMATIONS =====

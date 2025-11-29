@@ -945,6 +945,41 @@ body.chat-open-mobile {
     margin-bottom: 12px;
 }
 
+.activity-files {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.activity-file-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--psb-light-gray);
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.activity-file-item i {
+    font-size: 16px;
+    color: var(--psb-blue);
+}
+
+.activity-file-item i.fa-file-pdf {
+    color: #dc2626;
+}
+
+.activity-file-item i.fa-file-word {
+    color: #2563eb;
+}
+
+.activity-file-item .file-name {
+    color: var(--psb-dark);
+    font-weight: 500;
+}
+
 .course-tag {
     background: var(--psb-light-blue);
     color: var(--psb-blue);

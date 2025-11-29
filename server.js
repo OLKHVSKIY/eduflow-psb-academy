@@ -1,3 +1,6 @@
+// Устанавливаем часовой пояс на Москву
+process.env.TZ = 'Europe/Moscow';
+
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -9,6 +12,23 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+
+// Функция для получения московского времени в формате SQLite (YYYY-MM-DD HH:MM:SS)
+function getMoscowTime() {
+    const now = new Date();
+    // Получаем московское время
+    const moscowDate = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Moscow' }));
+    
+    // Форматируем в формат SQLite DATETIME
+    const year = moscowDate.getFullYear();
+    const month = String(moscowDate.getMonth() + 1).padStart(2, '0');
+    const day = String(moscowDate.getDate()).padStart(2, '0');
+    const hours = String(moscowDate.getHours()).padStart(2, '0');
+    const minutes = String(moscowDate.getMinutes()).padStart(2, '0');
+    const seconds = String(moscowDate.getSeconds()).padStart(2, '0');
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 
 // Middleware
 app.use(cors());
@@ -58,6 +78,148 @@ function initDatabase() {
                 });
             }
         });
+
+        // Таблица заданий
+        db.run(`CREATE TABLE IF NOT EXISTS assignments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            subject TEXT,
+            description TEXT,
+            deadline TEXT,
+            max_score INTEGER DEFAULT 100,
+            teacher_id INTEGER,
+            status TEXT DEFAULT 'active',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )`, (err) => {
+            if (err) {
+                console.error('Ошибка создания таблицы assignments:', err.message);
+            } else {
+                console.log('✅ Таблица assignments готова');
+                // Создаем начальные задания, если их нет
+                initDefaultAssignments();
+            }
+        });
+
+        // Таблица отправленных заданий
+        db.run(`CREATE TABLE IF NOT EXISTS assignment_submissions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            assignment_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            status TEXT DEFAULT 'submitted',
+            submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            score INTEGER,
+            feedback TEXT,
+            FOREIGN KEY (assignment_id) REFERENCES assignments(id) ON DELETE CASCADE,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )`, (err) => {
+            if (err) {
+                console.error('Ошибка создания таблицы assignment_submissions:', err.message);
+            } else {
+                console.log('✅ Таблица assignment_submissions готова');
+            }
+        });
+
+        // Таблица активности (лента)
+        db.run(`CREATE TABLE IF NOT EXISTS activities (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            type TEXT NOT NULL,
+            title TEXT NOT NULL,
+            description TEXT,
+            assignment_id INTEGER,
+            metadata TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (assignment_id) REFERENCES assignments(id) ON DELETE SET NULL
+        )`, (err) => {
+            if (err) {
+                console.error('Ошибка создания таблицы activities:', err.message);
+            } else {
+                console.log('✅ Таблица activities готова');
+            }
+        });
+    });
+}
+
+// Инициализация начальных заданий
+function initDefaultAssignments() {
+    db.get('SELECT COUNT(*) as count FROM assignments', (err, row) => {
+        if (err) {
+            console.error('Ошибка проверки заданий:', err.message);
+            return;
+        }
+
+        if (row.count === 0) {
+            console.log('📝 Создание начальных заданий...');
+            const defaultAssignments = [
+                {
+                    title: 'Финальный экзамен по математике',
+                    subject: 'Математика',
+                    description: 'Комплексный экзамен по всему курсу финансовой математики. Включает задачи по процентным ставкам, статистическому анализу и оптимизации портфеля.',
+                    deadline: '2025-12-15',
+                    max_score: 100,
+                    status: 'urgent'
+                },
+                {
+                    title: 'Кейс: Подбор финансового решения',
+                    subject: 'Экономика',
+                    description: 'Проанализируйте финансовое положение компании и предложите оптимальное решение по реструктуризации долга.',
+                    deadline: '2025-12-10',
+                    max_score: 50,
+                    status: 'active'
+                },
+                {
+                    title: 'Тест: Банковские продукты',
+                    subject: 'Финансы',
+                    description: 'Тестирование знаний по основным банковским продуктам и услугам Private Banking.',
+                    deadline: '2025-12-05',
+                    max_score: 30,
+                    status: 'active'
+                },
+                {
+                    title: 'Эссе по стандартам KYC',
+                    subject: 'Compliance',
+                    description: 'Напишите эссе о важности процедур Know Your Customer в современном банкинге и их влиянии на предотвращение финансовых преступлений.',
+                    deadline: '2025-12-20',
+                    max_score: 40,
+                    status: 'active'
+                },
+                {
+                    title: 'Проект: Модель машинного обучения',
+                    subject: 'Программирование',
+                    description: 'Разработайте модель машинного обучения для прогнозирования кредитного дефолта на основе исторических данных.',
+                    deadline: '2025-12-25',
+                    max_score: 100,
+                    status: 'active'
+                }
+            ];
+
+            const stmt = db.prepare(`INSERT INTO assignments (title, subject, description, deadline, max_score, status) 
+                                     VALUES (?, ?, ?, ?, ?, ?)`);
+            
+            defaultAssignments.forEach(assignment => {
+                stmt.run([
+                    assignment.title,
+                    assignment.subject,
+                    assignment.description,
+                    assignment.deadline,
+                    assignment.max_score,
+                    assignment.status
+                ], (err) => {
+                    if (err) {
+                        console.error('Ошибка создания задания:', err.message);
+                    }
+                });
+            });
+
+            stmt.finalize((err) => {
+                if (err) {
+                    console.error('Ошибка финализации:', err.message);
+                } else {
+                    console.log('✅ Начальные задания созданы');
+                }
+            });
+        }
     });
 }
 
@@ -104,10 +266,11 @@ app.post('/api/register', async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
 
             // Создание пользователя
+            const moscowTime = getMoscowTime();
             db.run(
-                `INSERT INTO users (email, password, first_name, last_name, phone, department, position, experience, specialty)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [email, hashedPassword, firstName, lastName, phone || null, department || null, position || null, null, null],
+                `INSERT INTO users (email, password, first_name, last_name, phone, department, position, experience, specialty, created_at, updated_at)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [email, hashedPassword, firstName, lastName, phone || null, department || null, position || null, null, null, moscowTime, moscowTime],
                 function(err) {
                     if (err) {
                         return res.status(500).json({ error: 'Ошибка при создании пользователя' });
@@ -260,7 +423,8 @@ app.put('/api/profile', authenticateToken, (req, res) => {
             return res.status(400).json({ error: 'Нет данных для обновления' });
         }
 
-        updates.push('updated_at = CURRENT_TIMESTAMP');
+        updates.push('updated_at = ?');
+        values.push(getMoscowTime());
         values.push(req.user.id);
 
         const sql = `UPDATE users SET ${updates.join(', ')} WHERE id = ?`;
@@ -298,6 +462,209 @@ app.put('/api/profile', authenticateToken, (req, res) => {
             );
         });
     }
+});
+
+// Смена пароля
+app.post('/api/change-password', authenticateToken, async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.id;
+
+    if (!currentPassword || !newPassword) {
+        return res.status(400).json({ error: 'Заполните все поля' });
+    }
+
+    if (newPassword.length < 8) {
+        return res.status(400).json({ error: 'Пароль должен содержать минимум 8 символов' });
+    }
+
+    // Получаем текущий пароль пользователя
+    db.get('SELECT password FROM users WHERE id = ?', [userId], async (err, user) => {
+        if (err) {
+            return res.status(500).json({ error: 'Ошибка базы данных' });
+        }
+        if (!user) {
+            return res.status(404).json({ error: 'Пользователь не найден' });
+        }
+
+        // Проверяем текущий пароль
+        const validPassword = await bcrypt.compare(currentPassword, user.password);
+        if (!validPassword) {
+            return res.status(401).json({ error: 'Неверный текущий пароль' });
+        }
+
+        // Хешируем новый пароль
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Обновляем пароль
+        db.run(
+            'UPDATE users SET password = ?, updated_at = ? WHERE id = ?',
+            [hashedPassword, getMoscowTime(), userId],
+            function(err) {
+                if (err) {
+                    return res.status(500).json({ error: 'Ошибка при обновлении пароля' });
+                }
+
+                res.json({
+                    message: 'Пароль успешно изменен'
+                });
+            }
+        );
+    });
+});
+
+// Получение заданий пользователя
+app.get('/api/assignments', authenticateToken, (req, res) => {
+    db.all(`
+        SELECT a.*, 
+               CASE WHEN s.id IS NOT NULL THEN 'submitted' ELSE 'active' END as user_status,
+               s.submitted_at,
+               s.score as user_score
+        FROM assignments a
+        LEFT JOIN assignment_submissions s ON a.id = s.assignment_id AND s.user_id = ?
+        ORDER BY a.deadline ASC
+    `, [req.user.id], (err, assignments) => {
+        if (err) {
+            return res.status(500).json({ error: 'Ошибка базы данных' });
+        }
+        res.json(assignments);
+    });
+});
+
+// Отправка задания
+app.post('/api/assignments/:id/submit', authenticateToken, (req, res) => {
+    const assignmentId = parseInt(req.params.id);
+    const userId = req.user.id;
+    const { files } = req.body; // Массив файлов с информацией о них
+
+    if (isNaN(assignmentId)) {
+        return res.status(400).json({ error: 'Неверный ID задания' });
+    }
+
+    console.log(`Попытка отправить задание ID: ${assignmentId}, пользователь ID: ${userId}`);
+
+    // Проверяем, не отправлено ли уже задание
+    db.get('SELECT id FROM assignment_submissions WHERE assignment_id = ? AND user_id = ?', 
+        [assignmentId, userId], (err, existing) => {
+            if (err) {
+                console.error('Ошибка проверки существующей отправки:', err);
+                return res.status(500).json({ error: 'Ошибка базы данных' });
+            }
+
+            if (existing) {
+                return res.status(400).json({ error: 'Задание уже отправлено' });
+            }
+
+            // Получаем информацию о задании
+            db.get('SELECT title FROM assignments WHERE id = ?', [assignmentId], (err, assignment) => {
+                if (err) {
+                    console.error('Ошибка получения задания:', err);
+                    return res.status(500).json({ error: 'Ошибка базы данных' });
+                }
+                if (!assignment) {
+                    console.log(`Задание с ID ${assignmentId} не найдено в БД`);
+                    return res.status(404).json({ error: 'Задание не найдено' });
+                }
+
+                // Создаем запись об отправке
+                const submissionTime = getMoscowTime();
+                db.run(
+                    'INSERT INTO assignment_submissions (assignment_id, user_id, status, submitted_at) VALUES (?, ?, ?, ?)',
+                    [assignmentId, userId, 'submitted', submissionTime],
+                    function(err) {
+                        if (err) {
+                            return res.status(500).json({ error: 'Ошибка при отправке задания' });
+                        }
+
+                        // Получаем данные пользователя для активности
+                        db.get('SELECT first_name, last_name FROM users WHERE id = ?', [userId], (err, user) => {
+                            if (err) {
+                                return res.status(500).json({ error: 'Ошибка базы данных' });
+                            }
+
+                            const userName = `${user.first_name} ${user.last_name}`;
+
+                            // Создаем активность в ленте
+                            const activityTime = getMoscowTime();
+                            const metadata = {
+                                assignmentTitle: assignment.title,
+                                files: files || [] // Сохраняем информацию о файлах
+                            };
+                            
+                            db.run(
+                                `INSERT INTO activities (user_id, type, title, description, assignment_id, metadata, created_at)
+                                 VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                                [
+                                    userId,
+                                    'assignment',
+                                    'Задание отправлено',
+                                    `${userName} отправил задание "${assignment.title}" на проверку`,
+                                    assignmentId,
+                                    JSON.stringify(metadata),
+                                    activityTime
+                                ],
+                                function(activityErr) {
+                                    if (activityErr) {
+                                        console.error('Ошибка создания активности:', activityErr);
+                                    }
+
+                                    res.json({
+                                        message: 'Задание успешно отправлено',
+                                        submissionId: this.lastID
+                                    });
+                                }
+                            );
+                        });
+                    }
+                );
+            });
+        }
+    );
+});
+
+// Получение активности для ленты
+app.get('/api/activities', authenticateToken, (req, res) => {
+    const limit = parseInt(req.query.limit) || 20;
+    
+    db.all(`
+        SELECT a.*, 
+               u.first_name, 
+               u.last_name,
+               u.email,
+               ass.title as assignment_title
+        FROM activities a
+        JOIN users u ON a.user_id = u.id
+        LEFT JOIN assignments ass ON a.assignment_id = ass.id
+        ORDER BY a.created_at DESC
+        LIMIT ?
+    `, [limit], (err, activities) => {
+        if (err) {
+            return res.status(500).json({ error: 'Ошибка базы данных' });
+        }
+
+        const formattedActivities = activities.map(activity => {
+            let metadata = null;
+            try {
+                metadata = activity.metadata ? JSON.parse(activity.metadata) : null;
+            } catch (e) {
+                console.error('Ошибка парсинга metadata:', e);
+                metadata = null;
+            }
+            
+            return {
+                id: activity.id,
+                type: activity.type,
+                title: activity.title,
+                description: activity.description,
+                userName: `${activity.first_name} ${activity.last_name}`,
+                userEmail: activity.email,
+                assignmentTitle: activity.assignment_title,
+                createdAt: activity.created_at,
+                metadata: metadata
+            };
+        });
+
+        res.json(formattedActivities);
+    });
 });
 
 // Запуск сервера
