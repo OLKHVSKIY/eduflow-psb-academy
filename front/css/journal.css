@@ -567,7 +567,7 @@
     padding: 16px 20px;
     border-radius: 12px;
     text-decoration: none;
-    color: var(--psb-dark);
+    color: var(--psb-gray);
     font-weight: 500;
     transition: all 0.3s ease;
     border: 1px solid transparent;

@@ -453,7 +453,7 @@ class AssignmentsManager {
                         </div>
                     </div>
                 ` : `
-                    <div class="pending-review">
+                    <div style= "margin-top: 20px" class="pending-review">
                         <i class="fas fa-clock"></i>
                         <span>Ожидает проверки преподавателем</span>
                     </div>
