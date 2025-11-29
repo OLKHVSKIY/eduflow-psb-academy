@@ -38,6 +38,7 @@ function initDatabase() {
             password TEXT NOT NULL,
             first_name TEXT NOT NULL,
             last_name TEXT NOT NULL,
+            phone TEXT,
             department TEXT,
             position TEXT,
             experience TEXT,
@@ -49,6 +50,12 @@ function initDatabase() {
                 console.error('Ошибка создания таблицы users:', err.message);
             } else {
                 console.log('✅ Таблица users готова');
+                // Добавляем колонку phone, если её нет (для существующих БД)
+                db.run(`ALTER TABLE users ADD COLUMN phone TEXT`, (alterErr) => {
+                    if (alterErr && !alterErr.message.includes('duplicate column name')) {
+                        console.log('Колонка phone уже существует или ошибка:', alterErr.message);
+                    }
+                });
             }
         });
     });
@@ -77,10 +84,10 @@ const authenticateToken = (req, res, next) => {
 // Регистрация
 app.post('/api/register', async (req, res) => {
     try {
-        const { email, password, firstName, lastName, department, position } = req.body;
+        const { email, password, firstName, lastName, phone, department, position } = req.body;
 
         // Валидация
-        if (!email || !password || !firstName || !lastName) {
+        if (!email || !password || !firstName || !lastName || !phone) {
             return res.status(400).json({ error: 'Заполните все обязательные поля' });
         }
 
@@ -98,9 +105,9 @@ app.post('/api/register', async (req, res) => {
 
             // Создание пользователя
             db.run(
-                `INSERT INTO users (email, password, first_name, last_name, department, position, experience, specialty)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                [email, hashedPassword, firstName, lastName, department || null, position || null, null, null],
+                `INSERT INTO users (email, password, first_name, last_name, phone, department, position, experience, specialty)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [email, hashedPassword, firstName, lastName, phone || null, department || null, position || null, null, null],
                 function(err) {
                     if (err) {
                         return res.status(500).json({ error: 'Ошибка при создании пользователя' });
@@ -173,7 +180,7 @@ app.post('/api/login', (req, res) => {
 
 // Получение профиля
 app.get('/api/profile', authenticateToken, (req, res) => {
-    db.get('SELECT id, email, first_name, last_name, department, position, experience, specialty, created_at, updated_at FROM users WHERE id = ?', 
+    db.get('SELECT id, email, first_name, last_name, phone, department, position, experience, specialty, created_at, updated_at FROM users WHERE id = ?', 
         [req.user.id], 
         (err, user) => {
             if (err) {
@@ -188,6 +195,7 @@ app.get('/api/profile', authenticateToken, (req, res) => {
                 email: user.email,
                 firstName: user.first_name,
                 lastName: user.last_name,
+                phone: user.phone,
                 department: user.department,
                 position: user.position,
                 experience: user.experience,
@@ -201,7 +209,7 @@ app.get('/api/profile', authenticateToken, (req, res) => {
 
 // Обновление профиля
 app.put('/api/profile', authenticateToken, (req, res) => {
-    const { email, department, position, experience, specialty } = req.body;
+    const { email, phone, department, position, experience, specialty } = req.body;
 
     // Проверка email на уникальность (если изменяется)
     if (email) {
@@ -226,6 +234,10 @@ app.put('/api/profile', authenticateToken, (req, res) => {
         if (email !== undefined) {
             updates.push('email = ?');
             values.push(email);
+        }
+        if (phone !== undefined) {
+            updates.push('phone = ?');
+            values.push(phone || null);
         }
         if (department !== undefined) {
             updates.push('department = ?');
@@ -259,7 +271,7 @@ app.put('/api/profile', authenticateToken, (req, res) => {
             }
 
             // Получаем обновленный профиль
-            db.get('SELECT id, email, first_name, last_name, department, position, experience, specialty, created_at, updated_at FROM users WHERE id = ?', 
+            db.get('SELECT id, email, first_name, last_name, phone, department, position, experience, specialty, created_at, updated_at FROM users WHERE id = ?', 
                 [req.user.id], 
                 (err, user) => {
                     if (err) {
@@ -273,6 +285,7 @@ app.put('/api/profile', authenticateToken, (req, res) => {
                             email: user.email,
                             firstName: user.first_name,
                             lastName: user.last_name,
+                            phone: user.phone,
                             department: user.department,
                             position: user.position,
                             experience: user.experience,

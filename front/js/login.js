@@ -153,6 +153,7 @@ function initAuthSystem() {
                 const firstName = document.getElementById('regFirstName');
                 const lastName = document.getElementById('regLastName');
                 const email = document.getElementById('regEmail');
+                const phone = document.getElementById('regPhone');
                 
                 if (!firstName.value.trim()) {
                     showError(firstName, 'Введите имя');
@@ -166,6 +167,11 @@ function initAuthSystem() {
                 
                 if (!email.value.trim() || !isValidEmail(email.value)) {
                     showError(email, 'Введите корректный email');
+                    isValid = false;
+                }
+                
+                if (!phone.value.trim()) {
+                    showError(phone, 'Введите номер телефона');
                     isValid = false;
                 }
                 break;
@@ -347,6 +353,7 @@ function initAuthSystem() {
         const firstName = document.getElementById('regFirstName').value;
         const lastName = document.getElementById('regLastName').value;
         const email = document.getElementById('regEmail').value;
+        const phone = document.getElementById('regPhone').value;
         const password = document.getElementById('regPassword').value;
         const department = document.getElementById('regDepartment').value;
         const position = document.getElementById('regPosition').value;
@@ -362,6 +369,7 @@ function initAuthSystem() {
                     password,
                     firstName,
                     lastName,
+                    phone,
                     department: department || null,
                     position: position || null
                 })

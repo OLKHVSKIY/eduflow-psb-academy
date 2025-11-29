@@ -176,6 +176,7 @@ if (!window.profilePageInitialized) {
         document.getElementById('profileFirstName').textContent = data.firstName || '-';
         document.getElementById('profileLastName').textContent = data.lastName || '-';
         document.getElementById('profileEmail').textContent = data.email || '-';
+        document.getElementById('profilePhone').textContent = data.phone || 'Не указано';
         document.getElementById('profileDepartment').textContent = data.department || 'Не указано';
         document.getElementById('profilePosition').textContent = data.position || 'Не указано';
         document.getElementById('profileSpecialty').textContent = data.specialty || 'Не указано';
@@ -234,6 +235,7 @@ if (!window.profilePageInitialized) {
 
         // Заполняем форму текущими данными
         document.getElementById('editEmail').value = profileData.email || '';
+        document.getElementById('editPhone').value = profileData.phone || '';
         document.getElementById('editDepartment').value = profileData.department || '';
         document.getElementById('editPosition').value = profileData.position || '';
         document.getElementById('editSpecialty').value = profileData.specialty || '';
@@ -266,6 +268,7 @@ if (!window.profilePageInitialized) {
     // Сохранение профиля
     async function saveProfile() {
         const email = document.getElementById('editEmail').value;
+        const phone = document.getElementById('editPhone').value;
         const department = document.getElementById('editDepartment').value;
         const position = document.getElementById('editPosition').value;
         const specialty = document.getElementById('editSpecialty').value;
@@ -281,6 +284,7 @@ if (!window.profilePageInitialized) {
                 },
                 body: JSON.stringify({
                     email,
+                    phone: phone || null,
                     department: department || null,
                     position: position || null,
                     specialty: specialty || null,
