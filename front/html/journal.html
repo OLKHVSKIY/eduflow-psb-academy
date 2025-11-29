@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Электронный дневник - EduFlow</title>
+    <link rel="icon" href="/img/PSB_Academy_icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/front/css/general.css">
+    <link rel="stylesheet" href="/front/css/journal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/front/html/main.html" class="logo-link">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div>
+                            <h1>EduFlow</h1>
+                            <span class="logo-subtitle">PSB Academy</span>
+                        </div>
+                    </div>
+                </a>
+
+                <button class="burger-menu" id="burgerMenu">
+                    <span class="burger-line"></span>
+                </button>
+
+                <nav class="profile-nav">
+                    <a href="main.html" class="nav-link">
+                        Главная
+                    </a>
+                    <a href="journal.html" class="mobile-nav-link active">
+                        Дневник
+                    </a>
+                    <a href="courses.html" class="nav-link">
+                        Уроки
+                    </a>
+                    <a href="assignments.html" class="nav-link">
+                        Задания
+                    </a>
+                    <a href="profile.html" class="nav-link">
+                        Профиль
+                    </a>
+                    <a href="settings.html" class="nav-link">
+                        Настройки
+                    </a>
+                </nav>
+                
+            <nav class="mobile-nav" id="mobileNav">
+                <a href="main.html" class="mobile-nav-link">
+                    Главная
+                </a>
+                <a href="journal.html" class="mobile-nav-link active">
+                    Дневник
+                </a>
+                <a href="courses.html" class="mobile-nav-link">
+                    Уроки
+                </a>
+                <a href="assignments.html" class="mobile-nav-link">
+                    Задания
+                </a>
+                <a href="profile.html" class="mobile-nav-link">
+                    Профиль
+                </a>
+                <a href="settings.html" class="mobile-nav-link">
+                    Настройки
+                </a>
+            </nav>
+            
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="journal-page">
+        <!-- Student Header -->
+        <div class="student-header">
+            <div class="container">
+                <div class="student-info">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&h=120&fit=crop&crop=face" alt="Иван Иванов" class="student-avatar">
+                    <div class="student-details">
+                        <h1>Иван Иванов</h1>
+                        <p>Студент группы П-21 • 2 курс</p>
+                        <div class="student-stats">
+                            <div class="stat">
+                                <span class="stat-value">8.2</span>
+                                <span class="stat-label">Средний балл</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">94%</span>
+                                <span class="stat-label">Посещаемость</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">12</span>
+                                <span class="stat-label">Заданий</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <section class="quick-stats">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Лучший предмет</h3>
+                            <div class="subject-name">Информатика</div>
+                            <div class="stat-value">9.5</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Требует внимания</h3>
+                            <div class="subject-name">Экономика</div>
+                            <div class="stat-value">6.5</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card info">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Прогресс за месяц</h3>
+                            <div class="progress-value">+8.2%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card success">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Выполнено работ</h3>
+                            <div class="stat-value">24/28</div>
+                            <div class="completion">86% выполнено</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Performance Analytics -->
+        <section class="analytics-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Аналитика успеваемости</h2>
+                    <div class="period-selector">
+                        <select class="period-select" id="analyticsPeriod">
+                            <option value="week">Неделя</option>
+                            <option value="month" selected>Месяц</option>
+                            <option value="quarter">Квартал</option>
+                            <option value="year">Год</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>Рейтинг предметов</h3>
+                        <div class="subjects-ranking">
+                            <div class="rank-item">
+                                <div class="rank-number">1</div>
+                                <div class="rank-subject">
+                                    <span class="subject-name">Информатика</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 95%"></div>
+                                    </div>
+                                </div>
+                                <div class="rank-grade">9.5</div>
+                            </div>
+                            <div class="rank-item">
+                                <div class="rank-number">2</div>
+                                <div class="rank-subject">
+                                    <span class="subject-name">Математика</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                                <div class="rank-grade">8.5</div>
+                            </div>
+                            <div class="rank-item">
+                                <div class="rank-number">3</div>
+                                <div class="rank-subject">
+                                    <span class="subject-name">Физика</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                                <div class="rank-grade">7.8</div>
+                            </div>
+                            <div class="rank-item">
+                                <div class="rank-number">4</div>
+                                <div class="rank-subject">
+                                    <span class="subject-name">Экономика</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 65%"></div>
+                                    </div>
+                                </div>
+                                <div class="rank-grade">6.5</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <h3>Динамика успеваемости</h3>
+                        <div class="performance-chart">
+                            <div class="chart-bars">
+                                <div class="chart-bar">
+                                    <div class="bar-value" style="height: 70%"></div>
+                                    <span class="bar-label">Сен</span>
+                                </div>
+                                <div class="chart-bar">
+                                    <div class="bar-value" style="height: 75%"></div>
+                                    <span class="bar-label">Окт</span>
+                                </div>
+                                <div class="chart-bar">
+                                    <div class="bar-value" style="height: 80%"></div>
+                                    <span class="bar-label">Ноя</span>
+                                </div>
+                                <div class="chart-bar">
+                                    <div class="bar-value" style="height: 82%"></div>
+                                    <span class="bar-label">Дек</span>
+                                </div>
+                                <div class="chart-bar current">
+                                    <div class="bar-value" style="height: 85%"></div>
+                                    <span class="bar-label">Янв</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subjects Performance -->
+        <section class="subjects-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Успеваемость по предметам</h2>
+                    <div class="view-controls">
+                        <button class="view-btn active" data-view="detailed">
+                            <i class="fas fa-list"></i> Детально
+                        </button>
+                        <button class="view-btn" data-view="grades">
+                            <i class="fas fa-table"></i> Оценки
+                        </button>
+                    </div>
+                </div>
+
+                <div class="subjects-container" id="subjectsContainer">
+                    <!-- Subjects will be loaded by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Grades -->
+        <section class="grades-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Последние оценки</h2>
+                    <button class="btn-outline" id="showAllGrades">
+                        <i class="fas fa-history"></i> Вся история
+                    </button>
+                </div>
+                
+                <div class="grades-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            <span class="date-day">15</span>
+                            <span class="date-month">Ноя</span>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="grade-info">
+                                <span class="subject-badge math">Математика</span>
+                                <span class="grade-type">Контрольная работа</span>
+                                <span class="grade-value excellent">9.2</span>
+                            </div>
+                            <p class="grade-comment">Отлично! Лучший результат в группе</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            <span class="date-day">12</span>
+                            <span class="date-month">Ноя</span>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="grade-info">
+                                <span class="subject-badge economics">Экономика</span>
+                                <span class="grade-type">Домашнее задание</span>
+                                <span class="grade-value medium">6.8</span>
+                            </div>
+                            <p class="grade-comment">Нужно повторить теорию спроса и предложения</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            <span class="date-day">10</span>
+                            <span class="date-month">Ноя</span>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="grade-info">
+                                <span class="subject-badge programming">Информатика</span>
+                                <span class="grade-type">Проект</span>
+                                <span class="grade-value excellent">9.8</span>
+                            </div>
+                            <p class="grade-comment">Прекрасная работа! Код хорошо структурирован</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            <span class="date-day">08</span>
+                            <span class="date-month">Ноя</span>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="grade-info">
+                                <span class="subject-badge physics">Физика</span>
+                                <span class="grade-type">Лабораторная</span>
+                                <span class="grade-value good">8.0</span>
+                            </div>
+                            <p class="grade-comment">Хорошо, но есть ошибки в расчетах</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Monthly Calendar -->
+        <section class="calendar-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Календарь оценок</h2>
+                    <div class="calendar-nav">
+                        <button class="nav-btn" id="prevMonth">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span class="current-month" id="currentMonth"></span>
+                        <button class="nav-btn" id="nextMonth">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar will be generated by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Subject Detail Modal -->
+    <div class="modal" id="subjectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalSubjectName">Детали предмета</h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="subject-detail">
+                    <div class="detail-stats">
+                        <div class="stat">
+                            <span class="stat-value" id="modalAverage">0.0</span>
+                            <span class="stat-label">Средний балл</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="modalTotalGrades">0</span>
+                            <span class="stat-label">Всего оценок</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="modalTrend">→</span>
+                            <span class="stat-label">Тренд</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grades-breakdown">
+                        <h4>Типы оценок</h4>
+                        <div class="breakdown-list" id="gradesBreakdown">
+                            <!-- Will be filled by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="detailed-grades">
+                        <h4>Все оценки</h4>
+                        <div class="grades-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Дата</th>
+                                        <th>Тип работы</th>
+                                        <th>Тема</th>
+                                        <th>Оценка</th>
+                                        <th>Комментарий</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detailedGradesTable">
+                                    <!-- Will be filled by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+       <!-- AI Study Assistant -->
+    <div class="ai-assistant">
+        <div class="ai-toggle" id="aiToggle">
+            <i class="fas fa-robot"></i>
+            <span class="ai-pulse"></span>
+        </div>
+        <div class="ai-chat" id="aiChat">
+            <div class="ai-header">
+                <div class="ai-title">
+                    <i class="fas fa-robot"></i>
+                    <span>Учебный ассистент</span>
+                </div>
+                <button class="ai-close" id="aiClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="ai-messages" id="aiMessages">
+                <div class="ai-message bot">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-text">
+                            Привет! Я твой учебный ассистент. Могу помочь проанализировать успеваемость, подсказать какие темы нужно повторить, и составить план подготовки.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ai-input">
+                <div class="ai-quick-actions">
+                    <button class="quick-action" data-prompt="Какие темы мне нужно повторить?">
+                        <i class="fas fa-book"></i>
+                        <span>Что повторить?</span>
+                    </button>
+                    <button class="quick-action" data-prompt="Как улучшить оценки по экономике?">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Улучшить экономику</span>
+                    </button>
+                    <button class="quick-action" data-prompt="Составь план подготовки на неделю">
+                        <i class="fas fa-calendar"></i>
+                        <span>План на неделю</span>
+                    </button>
+                </div>
+                <div class="input-container">
+                    <input type="text" placeholder="Спросите о вашей успеваемости..." id="aiInput">
+                    <button id="aiSend">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Grades Modal -->
+<div class="modal all-grades-modal" id="allGradesModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Все ваши оценки</h3>
+            <button class="modal-close" id="allGradesClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="grades-summary">
+                <div class="summary-card">
+                    <span class="summary-value" id="totalGradesCount">0</span>
+                    <span class="summary-label">Всего оценок</span>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-value" id="overallAverage">0.0</span>
+                    <span class="summary-label">Общий средний</span>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-value" id="excellentCount">0</span>
+                    <span class="summary-label">Отличных</span>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-value" id="improvementCount">0%</span>
+                    <span class="summary-label">Улучшение</span>
+                </div>
+            </div>
+            
+            <div class="grades-filter">
+                <select class="filter-select" id="subjectFilter">
+                    <option value="all">Все предметы</option>
+                    <option value="Математика">Математика</option>
+                    <option value="Информатика">Информатика</option>
+                    <option value="Экономика">Экономика</option>
+                    <option value="Физика">Физика</option>
+                </select>
+                
+                <select class="filter-select" id="gradeTypeFilter">
+                    <option value="all">Все типы</option>
+                    <option value="Контрольная работа">Контрольная работа</option>
+                    <option value="Домашнее задание">Домашнее задание</option>
+                    <option value="Тест">Тест</option>
+                    <option value="Проект">Проект</option>
+                    <option value="Лабораторная работа">Лабораторная работа</option>
+                    <option value="Эссе">Эссе</option>
+                </select>
+                
+                <select class="filter-select" id="timeFilter">
+                    <option value="all">За всё время</option>
+                    <option value="month">За месяц</option>
+                    <option value="quarter">За квартал</option>
+                    <option value="year">За год</option>
+                </select>
+                
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-sort="date">По дате</button>
+                    <button class="filter-btn" data-sort="grade">По оценке</button>
+                    <button class="filter-btn" data-sort="subject">По предмету</button>
+                </div>
+            </div>
+            
+            <div class="all-grades-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Предмет</th>
+                            <th>Тип работы</th>
+                            <th>Тема</th>
+                            <th>Оценка</th>
+                            <th>Комментарий</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allGradesTableBody">
+                        <!-- Grades will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Day Grades Popup -->
+<div class="day-grades-popup" id="dayGradesPopup">
+    <div class="popup-date" id="popupDate"></div>
+    <div class="popup-grades" id="popupGrades">
+        <!-- Day grades will be populated by JavaScript -->
+    </div>
+</div>
+
+    <script src="/front/js/journal.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const aiToggle = document.getElementById('aiToggle');
+        const aiChat = document.getElementById('aiChat');
+        const aiClose = document.getElementById('aiClose');
+        const aiInput = document.getElementById('aiInput');
+        const aiSend = document.getElementById('aiSend');
+
+        // Открытие/закрытие чата
+        aiToggle.addEventListener('click', function() {
+            aiChat.classList.add('active');
+            document.body.classList.add('chat-open-mobile');
+        });
+
+        aiClose.addEventListener('click', function() {
+            aiChat.classList.remove('active');
+            document.body.classList.remove('chat-open-mobile');
+        });
+
+        // Закрытие чата по клику на фон (только на мобильных)
+        aiChat.addEventListener('click', function(e) {
+            if (e.target === aiChat && window.innerWidth <= 768) {
+                aiChat.classList.remove('active');
+                document.body.classList.remove('chat-open-mobile');
+            }
+        });
+
+        // Отправка сообщения
+        aiSend.addEventListener('click', sendMessage);
+        aiInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Быстрые действия
+        document.querySelectorAll('.quick-action').forEach(btn => {
+            btn.addEventListener('click', function() {
+                aiInput.value = this.dataset.prompt;
+                sendMessage();
+            });
+        });
+
+        function sendMessage() {
+            const message = aiInput.value.trim();
+            if (!message) return;
+
+            // Добавляем сообщение пользователя
+            addMessage(message, 'user');
+            aiInput.value = '';
+
+            // Имитируем ответ AI
+            setTimeout(() => {
+                const response = generateAIResponse(message);
+                addMessage(response, 'bot');
+            }, 1000);
+        }
+
+        function addMessage(text, sender) {
+            const messagesContainer = document.getElementById('aiMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `ai-message ${sender}`;
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i class="fas fa-${sender === 'bot' ? 'robot' : 'user'}"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">${text}</div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function generateAIResponse(message) {
+            const responses = [
+                "Отличный вопрос! На основе вашей успеваемости, я вижу что вам стоит уделить больше внимания математике.",
+                "Ваш прогресс впечатляет! Продолжайте в том же духе, особенно по программированию.",
+                "Я проанализировал ваши оценки и рекомендую повторить тему дифференциальных уравнений.",
+                "За последний месяц вы показали рост на 12%. Отличный результат!",
+                "Обратите внимание на домашние задания по экономике - там есть потенциал для улучшения."
+            ];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+    });
+    </script>
+</body>
+</html>
