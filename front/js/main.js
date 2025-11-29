@@ -1,4 +1,64 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // ===== LOAD USER PROFILE =====
+    async function loadUserProfile() {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            // Если нет токена, перенаправляем на страницу входа
+            window.location.href = '/front/html/login.html';
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/profile', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 401) {
+                // Токен недействителен
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userId');
+                window.location.href = '/front/html/login.html';
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error('Ошибка загрузки профиля');
+            }
+
+            const profile = await response.json();
+            updateUserInfo(profile);
+        } catch (error) {
+            console.error('Ошибка загрузки профиля:', error);
+            // Не перенаправляем, просто показываем дефолтные данные
+        }
+    }
+
+    function updateUserInfo(profile) {
+        const fullName = `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || 'Пользователь';
+        
+        // Обновляем имя в header
+        const userNameElement = document.querySelector('.user-name');
+        if (userNameElement) {
+            userNameElement.textContent = fullName;
+        }
+
+        // Обновляем данные в dropdown меню
+        const userFullnameElement = document.querySelector('.user-fullname');
+        if (userFullnameElement) {
+            userFullnameElement.textContent = fullName;
+        }
+
+        const userEmailElement = document.querySelector('.user-email');
+        if (userEmailElement) {
+            userEmailElement.textContent = profile.email || '';
+        }
+    }
+
+    // Загружаем профиль при загрузке страницы
+    loadUserProfile();
+
     // ===== USER DROPDOWN MENU =====
     function initUserDropdown() {
         const userProfile = document.getElementById('userProfile');
@@ -78,8 +138,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Анимация выхода
             showNotification('Выход из системы...', 'warning');
             
+            // Очищаем токен и данные пользователя
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userId');
+            
             setTimeout(() => {
-                window.location.href = 'login.html';
+                window.location.href = '/front/html/login.html';
             }, 1000);
         }
 

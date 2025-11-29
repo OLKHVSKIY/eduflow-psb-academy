@@ -89,8 +89,8 @@
                                 </button>
                             </div>
                             <div class="avatar-info">
-                                <h1 class="user-fullname">Иван Петров</h1>
-                                <p class="user-title">Senior Developer</p>
+                                <h1 class="user-fullname" id="profileFullName">Загрузка...</h1>
+                                <p class="user-title" id="profileTitle">-</p>
                                 <div class="user-badges">
                                     <span class="badge premium">
                                         <i class="fas fa-crown"></i>
@@ -138,40 +138,75 @@
                             </button>
                         </div>
                         <div class="card-content">
-                            <div class="info-grid">
+                            <!-- Режим просмотра -->
+                            <div class="info-grid" id="profileViewMode">
                                 <div class="info-item">
                                     <label>Имя</label>
-                                    <span class="info-value">Иван</span>
+                                    <span class="info-value" id="profileFirstName">-</span>
                                 </div>
                                 <div class="info-item">
                                     <label>Фамилия</label>
-                                    <span class="info-value">Иванов</span>
+                                    <span class="info-value" id="profileLastName">-</span>
                                 </div>
                                 <div class="info-item">
                                     <label>Email</label>
-                                    <span class="info-value">ivan.ivanov@psb.ru</span>
+                                    <span class="info-value" id="profileEmail">-</span>
                                 </div>
                                 <div class="info-item">
-                                    <label>Телефон</label>
-                                    <span class="info-value">+7 (999) 123-45-67</span>
+                                    <label>Отдел <span class="required-marker" id="markerDepartment" style="display: none;">!</span></label>
+                                    <span class="info-value" id="profileDepartment">-</span>
                                 </div>
                                 <div class="info-item">
-                                    <label>Дата рождения</label>
-                                    <span class="info-value">15 марта 1990</span>
+                                    <label>Должность <span class="required-marker" id="markerPosition" style="display: none;">!</span></label>
+                                    <span class="info-value" id="profilePosition">-</span>
                                 </div>
                                 <div class="info-item">
-                                    <label>Группа</label>
-                                    <span class="info-value">IT программирование</span>
+                                    <label>Специальность <span class="required-marker" id="markerSpecialty" style="display: none;">!</span></label>
+                                    <span class="info-value" id="profileSpecialty">-</span>
                                 </div>
                                 <div class="info-item">
-                                    <label>Должность</label>
-                                    <span class="info-value">Senior Developer</span>
-                                </div>
-                                <div class="info-item">
-                                    <label>Стаж</label>
-                                    <span class="info-value">5 лет</span>
+                                    <label>Стаж <span class="required-marker" id="markerExperience" style="display: none;">!</span></label>
+                                    <span class="info-value" id="profileExperience">-</span>
                                 </div>
                             </div>
+                            
+                            <!-- Режим редактирования -->
+                            <form class="profile-edit-form" id="profileEditForm" style="display: none;">
+                                <div class="form-group">
+                                    <label for="editEmail">Email</label>
+                                    <input type="email" id="editEmail" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editDepartment">Отдел</label>
+                                    <select id="editDepartment">
+                                        <option value="">Выберите отдел</option>
+                                        <option value="it">IT отдел</option>
+                                        <option value="hr">HR отдел</option>
+                                        <option value="finance">Финансовый отдел</option>
+                                        <option value="marketing">Маркетинг</option>
+                                        <option value="engineering">Инженерия</option>
+                                        <option value="design">Дизайн</option>
+                                        <option value="sales">Продажи</option>
+                                        <option value="support">Поддержка</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editPosition">Должность</label>
+                                    <input type="text" id="editPosition" placeholder="Введите должность">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editSpecialty">Специальность</label>
+                                    <input type="text" id="editSpecialty" placeholder="Введите специальность">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editExperience">Стаж</label>
+                                    <input type="text" id="editExperience" placeholder="Например: 5 лет">
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn-outline" id="cancelEditBtn">Отмена</button>
+                                    <button type="submit" class="btn-primary">Сохранить</button>
+                                </div>
+                            </form>
                         </div>
                     </section>
 

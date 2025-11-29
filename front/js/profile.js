@@ -106,16 +106,216 @@ if (!window.profilePageInitialized) {
         setTimeout(initProfilePage, 0);
     }
 
-    function initProfilePage() {
+    let profileData = null;
+    let isEditMode = false;
+
+    async function initProfilePage() {
         console.log('🎯 Инициализация страницы профиля (один раз)');
         
-        // Запускаем все анимации сразу
+        // Проверяем авторизацию
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            showNotification('Необходима авторизация', 'error');
+            setTimeout(() => {
+                window.location.href = '/front/html/login.html';
+            }, 2000);
+            return;
+        }
+
+        // Загружаем данные профиля
+        await loadProfile();
+
+        // Запускаем все анимации
         initProgressAnimations();
         initInteractiveElements();
         
         // Если есть AI чат, инициализируем его
         if (document.querySelector('.ai-chat')) {
             initAIAssistant();
+        }
+    }
+
+    // Загрузка профиля с API
+    async function loadProfile() {
+        try {
+            const token = localStorage.getItem('authToken');
+            const response = await fetch('/api/profile', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 401) {
+                // Токен недействителен
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userId');
+                window.location.href = '/front/html/login.html';
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error('Ошибка загрузки профиля');
+            }
+
+            profileData = await response.json();
+            displayProfile(profileData);
+        } catch (error) {
+            console.error('Ошибка загрузки профиля:', error);
+            showNotification('Ошибка загрузки данных профиля', 'error');
+        }
+    }
+
+    // Отображение данных профиля
+    function displayProfile(data) {
+        // Обновляем заголовок
+        const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'Пользователь';
+        document.getElementById('profileFullName').textContent = fullName;
+        document.getElementById('profileTitle').textContent = data.position || '-';
+
+        // Обновляем поля
+        document.getElementById('profileFirstName').textContent = data.firstName || '-';
+        document.getElementById('profileLastName').textContent = data.lastName || '-';
+        document.getElementById('profileEmail').textContent = data.email || '-';
+        document.getElementById('profileDepartment').textContent = data.department || 'Не указано';
+        document.getElementById('profilePosition').textContent = data.position || 'Не указано';
+        document.getElementById('profileSpecialty').textContent = data.specialty || 'Не указано';
+        document.getElementById('profileExperience').textContent = data.experience || 'Не указано';
+
+        // Показываем маркеры для незаполненных полей
+        updateEmptyFieldMarkers(data);
+    }
+
+    // Обновление маркеров незаполненных полей
+    function updateEmptyFieldMarkers(data) {
+        // Отдел
+        const markerDepartment = document.getElementById('markerDepartment');
+        if (!data.department || data.department.trim() === '') {
+            markerDepartment.style.display = 'inline-block';
+        } else {
+            markerDepartment.style.display = 'none';
+        }
+
+        // Должность
+        const markerPosition = document.getElementById('markerPosition');
+        if (!data.position || data.position.trim() === '') {
+            markerPosition.style.display = 'inline-block';
+        } else {
+            markerPosition.style.display = 'none';
+        }
+
+        // Специальность
+        const markerSpecialty = document.getElementById('markerSpecialty');
+        if (!data.specialty || data.specialty.trim() === '') {
+            markerSpecialty.style.display = 'inline-block';
+        } else {
+            markerSpecialty.style.display = 'none';
+        }
+
+        // Стаж
+        const markerExperience = document.getElementById('markerExperience');
+        if (!data.experience || data.experience.trim() === '') {
+            markerExperience.style.display = 'inline-block';
+        } else {
+            markerExperience.style.display = 'none';
+        }
+    }
+
+    // Переключение в режим редактирования
+    function enterEditMode() {
+        if (!profileData) return;
+
+        isEditMode = true;
+        const viewMode = document.getElementById('profileViewMode');
+        const editForm = document.getElementById('profileEditForm');
+        const editBtn = document.querySelector('.edit-btn');
+
+        viewMode.style.display = 'none';
+        editForm.style.display = 'flex';
+
+        // Заполняем форму текущими данными
+        document.getElementById('editEmail').value = profileData.email || '';
+        document.getElementById('editDepartment').value = profileData.department || '';
+        document.getElementById('editPosition').value = profileData.position || '';
+        document.getElementById('editSpecialty').value = profileData.specialty || '';
+        document.getElementById('editExperience').value = profileData.experience || '';
+
+        // Обновляем кнопку
+        if (editBtn) {
+            editBtn.innerHTML = '<i class="fas fa-times"></i>';
+            editBtn.onclick = exitEditMode;
+        }
+    }
+
+    // Выход из режима редактирования
+    function exitEditMode() {
+        isEditMode = false;
+        const viewMode = document.getElementById('profileViewMode');
+        const editForm = document.getElementById('profileEditForm');
+        const editBtn = document.querySelector('.edit-btn');
+
+        viewMode.style.display = 'grid';
+        editForm.style.display = 'none';
+
+        // Обновляем кнопку
+        if (editBtn) {
+            editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+            editBtn.onclick = enterEditMode;
+        }
+    }
+
+    // Сохранение профиля
+    async function saveProfile() {
+        const email = document.getElementById('editEmail').value;
+        const department = document.getElementById('editDepartment').value;
+        const position = document.getElementById('editPosition').value;
+        const specialty = document.getElementById('editSpecialty').value;
+        const experience = document.getElementById('editExperience').value;
+
+        try {
+            const token = localStorage.getItem('authToken');
+            const response = await fetch('/api/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    email,
+                    department: department || null,
+                    position: position || null,
+                    specialty: specialty || null,
+                    experience: experience || null
+                })
+            });
+
+            if (response.status === 401) {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userId');
+                window.location.href = '/front/html/login.html';
+                return;
+            }
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Ошибка сохранения');
+            }
+
+            const result = await response.json();
+            profileData = result.user;
+
+            showNotification('Профиль успешно обновлен', 'success');
+            
+            // Обновляем отображение
+            displayProfile(profileData);
+            exitEditMode();
+
+            // Перезагружаем страницу для обновления всех данных
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } catch (error) {
+            console.error('Ошибка сохранения профиля:', error);
+            showNotification(error.message || 'Ошибка сохранения профиля', 'error');
         }
     }
 
@@ -260,10 +460,24 @@ if (!window.profilePageInitialized) {
     function initInteractiveElements() {
         console.log('🔄 Инициализация интерактивных элементов');
         
+        // Кнопка редактирования
         const editBtn = document.querySelector('.edit-btn');
         if (editBtn) {
-            editBtn.addEventListener('click', () => {
-                showNotification('Режим редактирования активирован', 'success');
+            editBtn.addEventListener('click', enterEditMode);
+        }
+
+        // Кнопка отмены редактирования
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        if (cancelEditBtn) {
+            cancelEditBtn.addEventListener('click', exitEditMode);
+        }
+
+        // Форма сохранения
+        const editForm = document.getElementById('profileEditForm');
+        if (editForm) {
+            editForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveProfile();
             });
         }
 

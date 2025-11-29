@@ -287,33 +287,55 @@ function initAuthSystem() {
     }
 
     // Обработка формы входа
-    loginForm.addEventListener('submit', function(e) {
+    loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const submitButton = this.querySelector('.btn-auth');
         submitButton.classList.add('loading');
         
-        // Имитация запроса к серверу
-        setTimeout(() => {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        
+        if (!email || !password) {
             submitButton.classList.remove('loading');
-            
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            if (email && password) {
+            showNotification('Пожалуйста, заполните все поля', 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            submitButton.classList.remove('loading');
+
+            if (response.ok) {
+                // Сохраняем токен
+                localStorage.setItem('authToken', data.token);
+                localStorage.setItem('userId', data.user.id);
+                
                 showNotification('Вход выполнен успешно!', 'success');
-                // Здесь будет редирект на главную страницу
                 setTimeout(() => {
-                    window.location.href = 'main.html';
+                    window.location.href = '/front/html/main.html';
                 }, 1500);
             } else {
-                showNotification('Пожалуйста, заполните все поля', 'error');
+                showNotification(data.error || 'Ошибка входа', 'error');
             }
-        }, 2000);
+        } catch (error) {
+            submitButton.classList.remove('loading');
+            showNotification('Ошибка соединения с сервером', 'error');
+            console.error('Ошибка входа:', error);
+        }
     });
 
     // Обработка формы регистрации
-    registerForm.addEventListener('submit', function(e) {
+    registerForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         if (!validateStep(3)) return;
@@ -321,16 +343,53 @@ function initAuthSystem() {
         const submitButton = this.querySelector('.btn-auth');
         submitButton.classList.add('loading');
         
-        // Имитация запроса к серверу
-        setTimeout(() => {
+        // Собираем данные из формы
+        const firstName = document.getElementById('regFirstName').value;
+        const lastName = document.getElementById('regLastName').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        const department = document.getElementById('regDepartment').value;
+        const position = document.getElementById('regPosition').value;
+
+        try {
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    firstName,
+                    lastName,
+                    department: department || null,
+                    position: position || null
+                })
+            });
+
+            const data = await response.json();
+
             submitButton.classList.remove('loading');
-            showNotification('Аккаунт успешно создан!', 'success');
-            
-            // Автоматический вход после регистрации
-            setTimeout(() => {
-                window.location.href = 'main.html';
-            }, 2000);
-        }, 3000);
+
+            if (response.ok) {
+                // Сохраняем токен
+                localStorage.setItem('authToken', data.token);
+                localStorage.setItem('userId', data.user.id);
+                
+                showNotification('Аккаунт успешно создан!', 'success');
+                
+                // Автоматический вход после регистрации
+                setTimeout(() => {
+                    window.location.href = '/front/html/main.html';
+                }, 2000);
+            } else {
+                showNotification(data.error || 'Ошибка регистрации', 'error');
+            }
+        } catch (error) {
+            submitButton.classList.remove('loading');
+            showNotification('Ошибка соединения с сервером', 'error');
+            console.error('Ошибка регистрации:', error);
+        }
     });
 
     // Система уведомлений
