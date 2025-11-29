@@ -92,7 +92,7 @@ body.chat-open-mobile {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 0;
+    padding: 12px 0;
 }
 
 .logo {
@@ -123,7 +123,6 @@ body.chat-open-mobile {
 .logo-subtitle {
     font-size: 12px;
     color: var(--psb-gray);
-    margin-left: 8px;
 }
 
 .logo-link {
@@ -150,12 +149,6 @@ body.chat-open-mobile {
     font-weight: 700;
     color: var(--psb-blue);
     margin: 0;
-}
-
-.logo-link .logo-subtitle {
-    font-size: 12px;
-    color: var(--psb-gray);
-    margin-left: 8px;
 }
 
 .icon-text {
@@ -1496,10 +1489,6 @@ body.chat-open-mobile {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .header-content {
-        gap: 16px;
-        text-align: center;
-    }
     
     .user-profile .user-name {
         display: none;
@@ -1564,9 +1553,5 @@ body.chat-open-mobile {
     
     .recommendation-card {
         padding: 20px;
-    }
-    
-    .logo-subtitle {
-        font-size: 11px;
     }
 }

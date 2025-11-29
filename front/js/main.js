@@ -462,4 +462,46 @@ dropdownStyles.textContent = `
         }
     }
 `;
+
+// Обработчик клика на блок "Мои уроки"
+document.addEventListener('DOMContentLoaded', function() {
+    const myCoursesCard = document.querySelector('.stat-card:first-child');
+    if (myCoursesCard) {
+        myCoursesCard.style.cursor = 'pointer';
+        myCoursesCard.addEventListener('click', function() {
+            window.location.href = 'courses.html';
+        });
+        
+        // Добавляем индикатор кликабельности
+        myCoursesCard.querySelectorAll('.course-item').forEach(item => {
+            item.style.cursor = 'pointer';
+        });
+    }
+});
+
+// Обработчик клика на блок "Задания"
+document.addEventListener('DOMContentLoaded', function() {
+    const assignmentsCard = document.querySelector('.stat-card:nth-child(2)');
+    if (assignmentsCard) {
+        assignmentsCard.style.cursor = 'pointer';
+        assignmentsCard.addEventListener('click', function() {
+            window.location.href = 'assignments.html';
+        });
+        
+        // Обновляем счетчик выполненных заданий на главной
+        const updateAssignmentsCount = () => {
+            const savedTasks = localStorage.getItem('completedTasks');
+            if (savedTasks) {
+                const completedCount = JSON.parse(savedTasks).length;
+                const completedBadge = assignmentsCard.querySelector('.badge.completed');
+                if (completedBadge) {
+                    completedBadge.textContent = `${completedCount} завершено`;
+                }
+            }
+        };
+        
+        updateAssignmentsCount();
+    }
+});
+
 document.head.appendChild(dropdownStyles);

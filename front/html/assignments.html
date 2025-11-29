@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои задания - EduFlow</title>
+    <link rel="icon" href="/img/PSB_Academy_icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/front/css/general.css">
+    <link rel="stylesheet" href="/front/css/main.css">
+    <link rel="stylesheet" href="/front/css/assignments.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/front/html/main.html" class="logo-link">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div>
+                            <h1>EduFlow</h1>
+                            <span class="logo-subtitle">PSB Academy</span>
+                        </div>
+                    </div>
+                </a>
+                
+                <button class="burger-menu" id="burgerMenu">
+                    <span class="burger-line"></span>
+                </button>
+                
+                <!-- Навигация для десктопа -->
+                <nav class="profile-nav">
+                    <a href="main.html" class="nav-link">
+                        Главная
+                    </a>
+                    <a href="courses.html" class="nav-link">
+                        Уроки
+                    </a>
+                    <a href="assignments.html" class="nav-link active">
+                        Задания
+                    </a>
+                    <a href="profile.html" class="nav-link">
+                        Профиль
+                    </a>
+                    <a href="settings.html" class="nav-link">
+                        Настройки
+                    </a>
+                </nav>
+                
+                <div class="user-menu">
+                    <!-- Тот же user-menu что и на главной -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Мобильное меню -->
+        <nav class="mobile-nav" id="mobileNav">
+            <a href="main.html" class="mobile-nav-link">
+                Главная
+            </a>
+            <a href="courses.html" class="mobile-nav-link">
+                Уроки
+            </a>
+            <a href="assignments.html" class="mobile-nav-link active">
+                Задания
+            </a>
+            <a href="profile.html" class="mobile-nav-link">
+                Профиль
+            </a>
+            <a href="settings.html" class="mobile-nav-link">
+                Настройки
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="assignments-page">
+        <div class="assignments-header">
+            <h1>Мои задания</h1>
+            <p>Выполняйте задания, загружайте решения и получайте обратную связь от преподавателей</p>
+        </div>
+
+        <div class="filters-section">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">
+                        Все
+                    </button>
+                    <button class="filter-btn" data-filter="active">
+                        Активные
+                    </button>
+                    <button class="filter-btn" data-filter="completed">
+                        Завершённые
+                    </button>
+                    <button class="filter-btn" data-filter="urgent">
+                        Срочные
+                    </button>
+                </div>
+                
+                <div class="filter-group">
+                    <button class="filter-btn" data-sort="deadline">
+                        По сроку
+                    </button>
+                    <button class="filter-btn" data-sort="subject">
+                        По предмету
+                    </button>
+                    <button class="filter-btn" data-sort="teacher">
+                        По преподавателю
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="assignments-container" id="assignmentsContainer">
+            <!-- Контент будет загружен через JavaScript -->
+        </div>
+    </main>
+
+    <!-- Модальное окно для просмотра задания -->
+    <div class="assignment-modal" id="assignmentModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <div id="modalContent">
+                <!-- Контент модального окна -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/front/js/assignments.js"></script>
+    <script>
+        // Скрипт для бургер-меню
+        document.addEventListener('DOMContentLoaded', function() {
+            const burgerMenu = document.getElementById('burgerMenu');
+            const mobileNav = document.getElementById('mobileNav');
+            
+            burgerMenu.addEventListener('click', function() {
+                this.classList.toggle('active');
+                mobileNav.classList.toggle('active');
+            });
+            
+            // Закрытие меню при клике вне его
+            document.addEventListener('click', function(e) {
+                if (!burgerMenu.contains(e.target) && !mobileNav.contains(e.target)) {
+                    burgerMenu.classList.remove('active');
+                    mobileNav.classList.remove('active');
+                }
+            });
+            
+            // Закрытие меню при клике на ссылку
+            mobileNav.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    burgerMenu.classList.remove('active');
+                    mobileNav.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
