@@ -38,8 +38,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Статические файлы - корень проекта
-app.use(express.static(path.join(__dirname)));
+// Статические файлы - папка front
+app.use(express.static(path.join(__dirname, 'front')));
 
 // Корневой маршрут - отдаем страницу входа
 app.get('/', (req, res) => {

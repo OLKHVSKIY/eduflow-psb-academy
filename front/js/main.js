@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const token = localStorage.getItem('authToken');
         if (!token) {
             // Если нет токена, перенаправляем на страницу входа
-            window.location.href = '/front/html/login.html';
+            window.location.href = '/html/login.html';
             return;
         }
 
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Токен недействителен
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('userId');
-                window.location.href = '/front/html/login.html';
+                window.location.href = '/html/login.html';
                 return;
             }
 
@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.removeItem('userId');
             
             setTimeout(() => {
-                window.location.href = '/front/html/login.html';
+                window.location.href = '/html/login.html';
             }, 1000);
         }
 

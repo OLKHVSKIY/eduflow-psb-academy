@@ -117,7 +117,7 @@ if (!window.profilePageInitialized) {
         if (!token) {
             showNotification('Необходима авторизация', 'error');
             setTimeout(() => {
-                window.location.href = '/front/html/login.html';
+                window.location.href = '/html/login.html';
             }, 2000);
             return;
         }
@@ -149,7 +149,7 @@ if (!window.profilePageInitialized) {
                 // Токен недействителен
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('userId');
-                window.location.href = '/front/html/login.html';
+                window.location.href = '/html/login.html';
                 return;
             }
 
@@ -295,7 +295,7 @@ if (!window.profilePageInitialized) {
             if (response.status === 401) {
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('userId');
-                window.location.href = '/front/html/login.html';
+                window.location.href = '/html/login.html';
                 return;
             }
 

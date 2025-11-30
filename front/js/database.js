@@ -1,4 +1,4 @@
-// /front/js/database.js - Pure JavaScript "база данных" с LocalStorage
+// /js/database.js - Pure JavaScript "база данных" с LocalStorage
 class EduFlowDatabase {
     constructor() {
         this.storageKey = 'eduflow_database';

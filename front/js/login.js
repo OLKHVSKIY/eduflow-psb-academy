@@ -328,7 +328,7 @@ function initAuthSystem() {
                 
                 showNotification('Вход выполнен успешно!', 'success');
                 setTimeout(() => {
-                    window.location.href = '/front/html/main.html';
+                    window.location.href = '/html/main.html';
                 }, 1500);
             } else {
                 showNotification(data.error || 'Ошибка входа', 'error');
@@ -388,7 +388,7 @@ function initAuthSystem() {
                 
                 // Автоматический вход после регистрации
                 setTimeout(() => {
-                    window.location.href = '/front/html/main.html';
+                    window.location.href = '/html/main.html';
                 }, 2000);
             } else {
                 showNotification(data.error || 'Ошибка регистрации', 'error');

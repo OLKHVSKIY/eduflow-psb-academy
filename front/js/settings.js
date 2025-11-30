@@ -9,7 +9,7 @@ function initSettingsPage() {
     if (!token) {
         showNotification('Необходима авторизация', 'error');
         setTimeout(() => {
-            window.location.href = '/front/html/login.html';
+            window.location.href = '/html/login.html';
         }, 2000);
         return;
     }
