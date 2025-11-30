@@ -38,7 +38,10 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Статические файлы - папка front
+// Статические файлы - папка img (изображения) - ДО front, чтобы не конфликтовало
+app.use('/img', express.static(path.join(__dirname, 'img')));
+
+// Статические файлы - папка front (CSS, JS, HTML)
 app.use(express.static(path.join(__dirname, 'front')));
 
 // Корневой маршрут - отдаем страницу входа
