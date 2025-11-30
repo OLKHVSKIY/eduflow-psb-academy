@@ -35,8 +35,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Статические файлы
-app.use(express.static(path.join(__dirname)));
 
 // Инициализация базы данных
 const dbPath = path.join(__dirname, 'database.sqlite');
@@ -242,6 +240,11 @@ const authenticateToken = (req, res, next) => {
 };
 
 // API Routes
+
+// Healthcheck / базовый эндпоинт API
+app.get('/api', (req, res) => {
+    res.json({ status: 'ok', message: 'EduFlow API is running' });
+});
 
 // Регистрация
 app.post('/api/register', async (req, res) => {
