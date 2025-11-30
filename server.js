@@ -1,5 +1,8 @@
+// Загрузка переменных окружения
+require('dotenv').config();
+
 // Устанавливаем часовой пояс на Москву
-process.env.TZ = 'Europe/Moscow';
+process.env.TZ = process.env.TZ || 'Europe/Moscow';
 
 const express = require('express');
 const cors = require('cors');
@@ -35,6 +38,13 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Статические файлы - корень проекта
+app.use(express.static(path.join(__dirname)));
+
+// Корневой маршрут - отдаем страницу входа
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'front', 'html', 'login.html'));
+});
 
 // Инициализация базы данных
 const dbPath = path.join(__dirname, 'database.sqlite');
