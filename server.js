@@ -35,8 +35,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Статические файлы
-app.use(express.static(path.join(__dirname)));
 
 // Инициализация базы данных
 const dbPath = path.join(__dirname, 'database.sqlite');
