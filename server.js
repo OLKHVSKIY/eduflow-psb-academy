@@ -243,6 +243,11 @@ const authenticateToken = (req, res, next) => {
 
 // API Routes
 
+// Healthcheck / базовый эндпоинт API
+app.get('/api', (req, res) => {
+    res.json({ status: 'ok', message: 'EduFlow API is running' });
+});
+
 // Регистрация
 app.post('/api/register', async (req, res) => {
     try {
