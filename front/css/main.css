@@ -20,6 +20,26 @@
     box-sizing: border-box;
 }
 
+.dynamic-activities-container {
+    display: contents; /* Сохраняет gap от родительского контейнера */
+    order: -1; /* Обеспечивает, что динамические будут выше статических */
+}
+
+.feed-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Если order не работает, используем этот подход */
+.feed-container .dynamic-activities-container ~ .activity-item {
+    order: 1; /* Статические после динамических */
+}
+
+.feed-container .dynamic-activities-container {
+    order: 0; /* Динамические первыми */
+}
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--psb-light-gray);
@@ -365,6 +385,15 @@ body.chat-open-mobile {
     }
 }
 
+/* Гарантированный gap между всеми карточками */
+.feed-container > * {
+    margin-bottom: 20px;
+}
+
+.feed-container > *:last-child {
+    margin-bottom: 0;
+}
+
 @media (max-width: 480px) {
     .dropdown-menu {
         width: 220px;
@@ -388,7 +417,7 @@ body.chat-open-mobile {
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 24px;
+    gap: 20px; /* Добавляем gap для карточек статистики */
     justify-items: center;
 }
 
@@ -878,6 +907,7 @@ body.chat-open-mobile {
     transform: translateY(0);
     transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     will-change: transform, opacity;
+    margin-bottom: 0; /* Убедитесь, что нет дополнительных отступов */
 }
 
 .activity-item.hidden {

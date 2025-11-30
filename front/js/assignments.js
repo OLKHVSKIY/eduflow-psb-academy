@@ -18,19 +18,26 @@ class AssignmentsManager {
     }
 
     async initializeAssignments() {
-        // Загружаем задания из API
+        // Сначала пытаемся загрузить из API
         await this.loadAssignmentsFromAPI();
         
-        // Если не удалось загрузить, используем дефолтные
+        // Если не удалось загрузить или нет заданий, используем дефолтные
         if (this.assignments.length === 0) {
-            this.assignments = [
+            this.assignments = this.getDefaultAssignments();
+            console.log('Используются демо-задания:', this.assignments.length);
+        }
+    }
+
+    getDefaultAssignments() {
+        return [
             {
                 id: 1,
                 title: "Финальный экзамен по математике",
                 subject: "Математика",
                 teacher: {
                     name: "Анна Петрова",
-                    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",                    email: "anna.petrova@psb.ru"
+                    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+                    email: "anna.petrova@psb.ru"
                 },
                 description: "Комплексный экзамен по всему курсу финансовой математики. Включает задачи по процентным ставкам, статистическому анализу и оптимизации портфеля.",
                 deadline: "2025-12-15",
@@ -154,7 +161,6 @@ class AssignmentsManager {
                 studentFiles: []
             }
         ];
-        }
     }
 
     async loadAssignmentsFromAPI() {
@@ -175,32 +181,84 @@ class AssignmentsManager {
                 throw new Error('Ошибка загрузки заданий');
             }
 
-            const assignments = await response.json();
+            const apiAssignments = await response.json();
             
-            // Преобразуем данные из БД в формат, ожидаемый фронтендом
-            this.assignments = assignments.map(assignment => ({
-                id: assignment.id,
-                title: assignment.title,
-                subject: assignment.subject || 'Общее',
-                teacher: {
-                    name: 'Преподаватель',
-                    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-                    email: 'teacher@psb.ru'
-                },
-                description: assignment.description || '',
-                deadline: assignment.deadline,
-                status: assignment.user_status === 'submitted' ? 'completed' : (assignment.status || 'active'),
-                maxScore: assignment.max_score || 100,
-                studentScore: assignment.user_score || null,
-                tasks: this.getDefaultTasks(assignment.subject),
-                attachments: [],
-                studentFiles: []
-            }));
+            if (apiAssignments && apiAssignments.length > 0) {
+                // Преобразуем данные из API в наш формат
+                this.assignments = apiAssignments.map((assignment, index) => {
+                    const teacherData = this.getTeacherData(assignment.subject, index);
+                    
+                    return {
+                        id: assignment.id,
+                        title: assignment.title,
+                        subject: assignment.subject || 'Общее',
+                        teacher: teacherData,
+                        description: assignment.description || 'Описание задания',
+                        deadline: assignment.deadline,
+                        status: this.mapApiStatus(assignment.user_status, assignment.status),
+                        maxScore: assignment.max_score || 100,
+                        studentScore: assignment.user_score || null,
+                        tasks: this.getDefaultTasks(assignment.subject),
+                        attachments: assignment.attachments || [],
+                        studentFiles: assignment.student_files || []
+                    };
+                });
 
-            console.log('Задания загружены из БД:', this.assignments.length);
+                console.log('Задания загружены из БД:', this.assignments.length);
+            }
         } catch (error) {
             console.error('Ошибка загрузки заданий:', error);
         }
+    }
+
+    getTeacherData(subject, index) {
+        const teachers = {
+            'Математика': [
+                {
+                    name: "Анна Петрова",
+                    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+                    email: "anna.petrova@psb.ru"
+                }
+            ],
+            'Экономика': [
+                {
+                    name: "Михаил Козлов",
+                    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+                    email: "mikhail.kozlov@psb.ru"
+                }
+            ],
+            'Финансы': [
+                {
+                    name: "Елена Смирнова",
+                    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+                    email: "elena.smirnova@psb.ru"
+                }
+            ],
+            'Compliance': [
+                {
+                    name: "Дмитрий Иванов",
+                    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+                    email: "dmitry.ivanov@psb.ru"
+                }
+            ],
+            'Программирование': [
+                {
+                    name: "Алексей Волков",
+                    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+                    email: "aleksey.volkov@psb.ru"
+                }
+            ]
+        };
+
+        const subjectTeachers = teachers[subject] || teachers['Математика'];
+        return subjectTeachers[index % subjectTeachers.length];
+    }
+
+    mapApiStatus(userStatus, apiStatus) {
+        if (userStatus === 'submitted') return 'completed';
+        if (apiStatus === 'urgent') return 'urgent';
+        if (apiStatus === 'new') return 'new';
+        return 'active';
     }
 
     getDefaultTasks(subject) {
@@ -234,6 +292,7 @@ class AssignmentsManager {
     }
 
     initializeEventListeners() {
+        // Фильтры
         document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
@@ -243,6 +302,7 @@ class AssignmentsManager {
             });
         });
 
+        // Сортировка
         document.querySelectorAll('.filter-btn[data-sort]').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.filter-btn[data-sort]').forEach(b => b.classList.remove('active'));
@@ -252,6 +312,7 @@ class AssignmentsManager {
             });
         });
 
+        // Модальное окно
         const modal = document.getElementById('assignmentModal');
         const modalClose = document.getElementById('modalClose');
         
@@ -280,15 +341,17 @@ class AssignmentsManager {
 
     applyFilters() {
         this.filteredAssignments = this.assignments.filter(assignment => {
-            let matchesFilter = true;
+            if (this.currentFilter === 'all') return true;
             if (this.currentFilter === 'active') {
-                matchesFilter = assignment.status === 'active' || assignment.status === 'new';
-            } else if (this.currentFilter === 'completed') {
-                matchesFilter = assignment.status === 'completed';
-            } else if (this.currentFilter === 'urgent') {
-                matchesFilter = assignment.status === 'urgent';
+                return assignment.status === 'active' || assignment.status === 'new';
             }
-            return matchesFilter;
+            if (this.currentFilter === 'completed') {
+                return assignment.status === 'completed';
+            }
+            if (this.currentFilter === 'urgent') {
+                return assignment.status === 'urgent';
+            }
+            return true;
         });
 
         this.filteredAssignments = this.sortAssignments(this.filteredAssignments);
@@ -324,8 +387,12 @@ class AssignmentsManager {
             return;
         }
 
-        container.innerHTML = this.filteredAssignments.map(assignment => `
-            <div class="assignment-section">
+        container.innerHTML = this.filteredAssignments.map(assignment => this.renderAssignmentCard(assignment)).join('');
+    }
+
+    renderAssignmentCard(assignment) {
+        return `
+            <div class="assignment-section" data-assignment-id="${assignment.id}">
                 <div class="assignment-header">
                     <div class="assignment-main-info">
                         <div class="assignment-title">
@@ -435,7 +502,7 @@ class AssignmentsManager {
                     `}
                 </div>
             </div>
-        `).join('');
+        `;
     }
 
     renderUploadSection(assignment) {
@@ -504,7 +571,7 @@ class AssignmentsManager {
             <div class="submission-info">
                 <div class="submission-header">
                     <div class="submission-details">
-                        <h4><i style = "margin-right: 10px" class="fas fa-check-circle"></i>Работа сдана на проверку</h4>
+                        <h4><i style="margin-right: 10px" class="fas fa-check-circle"></i>Работа сдана на проверку</h4>
                         <p>Сдано: ${submissionDate}</p>
                     </div>
                 </div>
@@ -541,7 +608,7 @@ class AssignmentsManager {
                         </div>
                     </div>
                 ` : `
-                    <div style= "margin-top: 20px" class="pending-review">
+                    <div style="margin-top: 20px" class="pending-review">
                         <i class="fas fa-clock"></i>
                         <span>Ожидает проверки преподавателем</span>
                     </div>
@@ -682,13 +749,6 @@ class AssignmentsManager {
             return;
         }
 
-        // Собираем информацию о файлах
-        const files = (assignment.studentFiles || []).map(file => ({
-            name: file.name,
-            type: file.type,
-            size: file.size
-        }));
-
         try {
             const response = await fetch(`/api/assignments/${assignmentId}/submit`, {
                 method: 'POST',
@@ -696,16 +756,15 @@ class AssignmentsManager {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ files })
+                body: JSON.stringify({ 
+                    files: assignment.studentFiles || [] 
+                })
             });
 
             const data = await response.json();
 
             if (response.ok) {
                 assignment.status = 'completed';
-                const now = new Date();
-                const moscowDate = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Moscow' }));
-                assignment.submissionDate = moscowDate.toISOString();
                 assignment.user_status = 'submitted';
                 this.applyFilters();
                 this.showNotification(`Задание "${assignment.title}" отправлено на проверку!`, 'success');
@@ -737,7 +796,14 @@ class AssignmentsManager {
                 assignment.studentFiles = [];
             }
             
-            assignment.studentFiles.push(fileInfo);
+            // Проверяем, нет ли уже файла с таким именем
+            const existingFileIndex = assignment.studentFiles.findIndex(f => f.name === file.name);
+            if (existingFileIndex !== -1) {
+                assignment.studentFiles[existingFileIndex] = fileInfo;
+            } else {
+                assignment.studentFiles.push(fileInfo);
+            }
+            
             this.uploadedFiles.set(`${assignmentId}-${file.name}`, file);
         });
 
@@ -808,6 +874,7 @@ let assignmentsManager;
 document.addEventListener('DOMContentLoaded', async function() {
     assignmentsManager = new AssignmentsManager();
     
+    // Обработчик клика на карточку заданий на главной странице
     const assignmentsBtn = document.querySelector('.stat-card:nth-child(2)');
     if (assignmentsBtn) {
         assignmentsBtn.style.cursor = 'pointer';
@@ -817,34 +884,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
-// Drag and Drop
+// Drag and Drop функциональность
 document.addEventListener('DOMContentLoaded', function() {
-    const uploadSections = document.querySelectorAll('.upload-area');
+    document.addEventListener('dragover', function(e) {
+        e.preventDefault();
+    });
     
-    uploadSections.forEach(section => {
-        section.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.style.borderColor = 'var(--psb-blue)';
-            this.style.background = 'var(--psb-light-blue)';
-        });
-        
-        section.addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            this.style.borderColor = 'var(--psb-border)';
-            this.style.background = 'var(--psb-white)';
-        });
-        
-        section.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.style.borderColor = 'var(--psb-border)';
-            this.style.background = 'var(--psb-white)';
-            
-            const assignmentId = this.closest('.upload-section').id.split('-')[1];
-            const files = e.dataTransfer.files;
-            
-            if (files.length > 0 && assignmentsManager) {
-                assignmentsManager.handleFileUpload(parseInt(assignmentId), files);
-            }
-        });
+    document.addEventListener('drop', function(e) {
+        e.preventDefault();
     });
 });

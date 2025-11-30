@@ -80,90 +80,112 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const activities = await response.json();
             allActivities = activities; // Сохраняем все активности для фильтрации
-            renderActivities(activities);
+            renderDynamicActivities(activities); // Используем новую функцию
         } catch (error) {
             console.error('Ошибка загрузки активности:', error);
         }
     }
 
-    function renderActivities(activities) {
+    // НОВАЯ ФУНКЦИЯ: рендерит только динамические активности СВЕРХУ
+    function renderDynamicActivities(activities) {
         const container = document.getElementById('feedContainer');
         if (!container) return;
 
-        if (activities.length === 0) {
-            container.innerHTML = `
-                <div class="no-activities">
-                    <i class="fas fa-inbox"></i>
-                    <p>Пока нет активности</p>
-                </div>
-            `;
-            return;
+        // Находим контейнер для динамических активностей
+        let dynamicContainer = container.querySelector('.dynamic-activities-container');
+        
+        // Если контейнера для динамических активностей нет - создаем его
+        if (!dynamicContainer) {
+            dynamicContainer = document.createElement('div');
+            dynamicContainer.className = 'dynamic-activities-container';
+            
+            // Вставляем ПЕРВЫМ элементом в контейнер (САМЫЙ ВЕРХ)
+            container.prepend(dynamicContainer);
         }
 
-        container.innerHTML = activities.map((activity, index) => {
-            const timeAgo = formatTimeAgo(activity.createdAt);
-            const iconConfig = getActivityIcon(activity.type);
-            
-            return `
-                <div class="activity-item fade-in-up" style="animation-delay: ${0.1 * index}s" data-type="${activity.type}">
-                    <div class="activity-main">
-                        <div class="activity-icon" style="background: ${iconConfig.color}">
-                            <i class="${iconConfig.icon}"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-header">
-                                <span class="activity-title">${activity.title}</span>
-                                <span class="activity-time">${timeAgo}</span>
+        // Очищаем только динамический контейнер
+        dynamicContainer.innerHTML = '';
+
+        // Добавляем динамические активности СВЕРХУ
+        if (activities.length > 0) {
+            // Сортируем активности по дате (новые сверху)
+            const sortedActivities = [...activities].sort((a, b) => 
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+
+            dynamicContainer.innerHTML = sortedActivities.map((activity, index) => {
+                const timeAgo = formatTimeAgo(activity.createdAt);
+                const iconConfig = getActivityIcon(activity.type);
+                
+                return `
+                    <div class="activity-item fade-in-up" style="animation-delay: ${0.1 * index}s" data-type="${activity.type}">
+                        <div class="activity-main">
+                            <div class="activity-icon" style="background: ${iconConfig.color}">
+                                <i class="${iconConfig.icon}"></i>
                             </div>
-                            <p class="activity-text">
-                                ${activity.description || ''}
-                            </p>
-                            ${activity.assignmentTitle ? `
-                                <div class="activity-meta">
-                                    <span class="course-tag">#${activity.assignmentTitle}</span>
+                            <div class="activity-content">
+                                <div class="activity-header">
+                                    <span class="activity-title">${activity.title}</span>
+                                    <span class="activity-time">${timeAgo}</span>
                                 </div>
-                            ` : ''}
-                            ${(() => {
-                                try {
-                                    const metadata = typeof activity.metadata === 'string' 
-                                        ? JSON.parse(activity.metadata) 
-                                        : activity.metadata;
-                                    if (metadata && metadata.files && metadata.files.length > 0) {
-                                        return `
-                                            <div class="activity-files">
-                                                ${metadata.files.map(file => {
-                                                    const fileIcon = file.type === 'pdf' ? 'fa-file-pdf' : 
-                                                                   file.type === 'doc' ? 'fa-file-word' : 
-                                                                   'fa-file';
-                                                    return `
-                                                        <div class="activity-file-item">
-                                                            <i class="fas ${fileIcon}"></i>
-                                                            <span class="file-name">${file.name}</span>
-                                                        </div>
-                                                    `;
-                                                }).join('')}
-                                            </div>
-                                        `;
+                                <p class="activity-text">
+                                    ${activity.description || ''}
+                                </p>
+                                ${activity.assignmentTitle ? `
+                                    <div class="activity-meta">
+                                        <span class="course-tag">#${activity.assignmentTitle}</span>
+                                    </div>
+                                ` : ''}
+                                ${(() => {
+                                    try {
+                                        const metadata = typeof activity.metadata === 'string' 
+                                            ? JSON.parse(activity.metadata) 
+                                            : activity.metadata;
+                                        if (metadata && metadata.files && metadata.files.length > 0) {
+                                            return `
+                                                <div class="activity-files">
+                                                    ${metadata.files.map(file => {
+                                                        const fileIcon = file.type === 'pdf' ? 'fa-file-pdf' : 
+                                                                       file.type === 'doc' ? 'fa-file-word' : 
+                                                                       'fa-file';
+                                                        return `
+                                                            <div class="activity-file-item">
+                                                                <i class="fas ${fileIcon}"></i>
+                                                                <span class="file-name">${file.name}</span>
+                                                            </div>
+                                                        `;
+                                                    }).join('')}
+                                                </div>
+                                            `;
+                                        }
+                                    } catch (e) {
+                                        console.error('Ошибка парсинга metadata:', e);
                                     }
-                                } catch (e) {
-                                    console.error('Ошибка парсинга metadata:', e);
-                                }
-                                return '';
-                            })()}
+                                    return '';
+                                })()}
+                            </div>
                         </div>
+                        ${activity.type === 'assignment' ? `
+                            <div class="activity-badge success">
+                                <i class="fas fa-check"></i> Отправлено
+                            </div>
+                        ` : `
+                            <div class="activity-actions">
+                                <button class="btn-outline">Открыть</button>
+                            </div>
+                        `}
                     </div>
-                    ${activity.type === 'assignment' ? `
-                        <div class="activity-badge success">
-                            <i class="fas fa-check"></i> Отправлено
-                        </div>
-                    ` : `
-                        <div class="activity-actions">
-                            <button class="btn-outline">Открыть</button>
-                        </div>
-                    `}
+                `;
+            }).join('');
+        } else {
+            // Если нет динамических активностей, показываем сообщение
+            dynamicContainer.innerHTML = `
+                <div class="no-activities-message">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Нет новых активностей</p>
                 </div>
             `;
-        }).join('');
+        }
     }
 
     function getActivityIcon(type) {
@@ -202,6 +224,43 @@ document.addEventListener('DOMContentLoaded', function() {
         if (diffDays < 7) return `${diffDays} дня назад`;
         
         return moscowDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', timeZone: 'Europe/Moscow' });
+    }
+
+    // ===== FILTER FUNCTIONALITY =====
+    let allActivities = [];
+    
+    function initFilterFunctionality() {
+        const filterButtons = document.querySelectorAll('.btn-filter');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+                
+                // Обновляем активную кнопку
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Фильтруем элементы
+                filterActivityItems(filter);
+            });
+        });
+    }
+    
+    function filterActivityItems(filter) {
+        const container = document.getElementById('feedContainer');
+        if (!container) return;
+
+        const allItems = container.querySelectorAll('.activity-item');
+        
+        allItems.forEach(item => {
+            const itemType = item.getAttribute('data-type');
+            
+            if (filter === 'all' || itemType === filter) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
     }
 
     // ===== USER DROPDOWN MENU =====
@@ -494,37 +553,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // ===== FILTER FUNCTIONALITY =====
-    let allActivities = [];
-    
-    function initFilterFunctionality() {
-        const filterButtons = document.querySelectorAll('.btn-filter');
-        
-        filterButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const filter = this.getAttribute('data-filter');
-                
-                // Обновляем активную кнопку
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Фильтруем элементы
-                filterActivityItems(filter);
-            });
-        });
-    }
-    
-    function filterActivityItems(filter) {
-        const container = document.getElementById('feedContainer');
-        if (!container) return;
-
-        const filtered = filter === 'all' 
-            ? allActivities 
-            : allActivities.filter(activity => activity.type === filter);
-        
-        renderActivities(filtered);
-    }
-
     // ===== PROGRESS ANIMATIONS =====
     function initProgressAnimations() {
         // Линейные прогресс-бары
@@ -631,6 +659,34 @@ dropdownStyles.textContent = `
             opacity: 0;
             transform: translateX(100%);
         }
+    }
+
+    .no-activities-message {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--psb-gray);
+    }
+
+    .no-activities-message i {
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
+
+    .no-activities-message p {
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .dynamic-activities-container {
+        display: contents; /* Сохраняет gap от родительского контейнера */
+        order: -1; /* Обеспечивает, что динамические будут выше статических */
+    }
+
+    .feed-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
     }
 `;
 

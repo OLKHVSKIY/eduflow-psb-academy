@@ -132,12 +132,34 @@ function updatePasswordStrength(strength) {
         }
     }
 }
-
-// Переключение видимости пароля
 function initTogglePassword() {
     const toggleButtons = document.querySelectorAll('.toggle-password');
     
     toggleButtons.forEach(button => {
+        // Принудительно устанавливаем стили для кнопки - сдвигаем ЛЕВЕЕ
+        button.style.position = 'absolute';
+        button.style.left = 'calc(100% - 45px)'; // Начинаем с этого значения
+        button.style.top = '50%';
+        button.style.transform = 'translateY(-50%)';
+        button.style.transform = 'translateY(-50%)';
+        button.style.background = 'none';
+        button.style.border = 'none';
+        button.style.cursor = 'pointer';
+        button.style.padding = '4px';
+        button.style.margin = '0';
+        button.style.zIndex = '2';
+        
+        const icon = button.querySelector('i');
+        if (icon) {
+            icon.style.marginRight = '0';
+            icon.style.fontSize = '16px';
+            icon.style.display = 'flex';
+            icon.style.alignItems = 'center';
+            icon.style.justifyContent = 'center';
+            icon.style.width = '20px';
+            icon.style.height = '20px';
+        }
+        
         button.addEventListener('click', function() {
             const targetId = this.getAttribute('data-target');
             const passwordInput = document.getElementById(targetId);
