@@ -879,7 +879,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (assignmentsBtn) {
         assignmentsBtn.style.cursor = 'pointer';
         assignmentsBtn.addEventListener('click', function() {
-            window.location.href = 'assignments.html';
+            window.location.href = '/html/assignments.html';
         });
     }
 });

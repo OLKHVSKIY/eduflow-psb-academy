@@ -696,7 +696,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (myCoursesCard) {
         myCoursesCard.style.cursor = 'pointer';
         myCoursesCard.addEventListener('click', function() {
-            window.location.href = 'courses.html';
+            window.location.href = '/html/courses.html';
         });
         
         // Добавляем индикатор кликабельности
@@ -712,7 +712,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (assignmentsCard) {
         assignmentsCard.style.cursor = 'pointer';
         assignmentsCard.addEventListener('click', function() {
-            window.location.href = 'assignments.html';
+            window.location.href = '/html/assignments.html';
         });
         
         // Обновляем счетчик выполненных заданий на главной

@@ -593,7 +593,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (myCoursesBtn) {
         myCoursesBtn.style.cursor = 'pointer';
         myCoursesBtn.addEventListener('click', function() {
-            window.location.href = 'courses.html';
+            window.location.href = '/html/courses.html';
         });
     }
 });
