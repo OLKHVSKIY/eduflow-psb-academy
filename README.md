@@ -4,6 +4,8 @@
 
 **Современная платформа корпоративного обучения для PSB Academy**
 
+🌐 **Доступна по адресу:** [https://education-flow.ru/](https://education-flow.ru/)
+
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.18-blue.svg)](https://expressjs.com/)
 [![SQLite](https://img.shields.io/badge/SQLite-3-lightgrey.svg)](https://www.sqlite.org/)
@@ -61,7 +63,12 @@ npm run dev
 
 4. **Откройте в браузере**:
 ```
-http://localhost:3000/front/html/login.html
+http://localhost:3000
+```
+
+**Или используйте production версию:**
+```
+https://education-flow.ru/
 ```
 
 ### Первый запуск
